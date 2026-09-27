@@ -80,14 +80,25 @@ Things worth knowing before editing:
 
 - **The pinned photo** (`.pinned`) is the site's one repeated gesture: white
   border, faint shadow, slight rotation. It is used in the hero collage, the
-  story panel, the menu's featured row and the map. New imagery should use it
+  story panel, the menu's house favourites and the map. New imagery should use it
   rather than inventing a second treatment.
-- **The hero is full-bleed cinematic media** with the line at the bottom. The
-  `<img>` is a **stand-in for real Nash footage** — swapping in
-  `<video autoplay muted loop playsinline poster="…">` needs no CSS change,
-  because `.hero-media > *` styles either. A video must be muted to autoplay at
-  all, and wants a poster and a short loop: a heavy hero video is punishing on
-  a Damascus mobile connection.
+- **The hero plays real Nash footage**: `video.mp4` in the project root, a
+  **vertical phone clip (360 x 640, ~35 s, 3.9 MB)** with
+  `images/hero-poster.jpg` (its first frame) as the poster. It is `muted`
+  with no controls, so it can never make a sound — the client asked for no
+  sound, and autoplay only works muted anyway. The file still carries an
+  audio track; stripping it (no ffmpeg on this machine) would shave a little
+  weight off a Damascus mobile connection.
+
+  Because the clip is vertical, the layout splits on `min-aspect-ratio: 1/1`:
+  on portrait screens it fills the hero full-bleed; on landscape screens
+  filling it would mean a ~4x upscale with the people cropped out, so it
+  becomes a tilted white-bordered card on the right (the `.pinned` look) over
+  a blurred copy of the poster, and the line moves to the left. The push-in
+  runs on the video when it is full-bleed and on the blurred backdrop when it
+  is a card. Under reduced motion the video is paused on its poster, in its
+  own script block so it works even if GSAP fails to load. If the footage is
+  ever swapped for a landscape clip, the card mode is what to remove.
 
   Two things hold it together:
 
@@ -97,7 +108,9 @@ Things worth knowing before editing:
      `section[id]{scroll-margin-top}`, which is set to 86px — confirmed by
      jumping to `#story` directly rather than trusting a screenshot tool's own
      scroll-into-view, which ignores `scroll-margin-top` and will show a false
-     overlap that never happens in real navigation.
+     overlap that never happens in real navigation. **Lenis ignores
+     `scroll-margin-top`** for clicked links, so the same 86px is also passed
+     as `anchors:{offset:-86}` in the Lenis setup — change one, change both.
   2. **The scrim is a four-stop gradient**, not a flat tint — dark at the top
      for the navbar, dark at the bottom for the line, clear through the middle
      so the photograph survives. White type over an unscrimmed photo is a coin
@@ -122,16 +135,42 @@ Things worth knowing before editing:
 - **Green panels** carry `.on-green`, which switches the focus ring and `.note`
   colour to `--butter`.
 - **The menu is the showpiece.** It is a photo grid, not a list: every item
-  carries its own photograph, because this is where people decide what to buy
-  and it deserves the largest images on the page. One card per run carries
-  `.is-lead` and spans two columns with a wider crop, which is what keeps it an
-  editorial grid rather than a uniform tile field.
+  carries its own photograph, because this is where people decide what to
+  buy. It has two parts:
 
-  The filter contract: `.mf-btn[data-show]` toggles `.is-on` and sets
-  `data-view` on `.menu-board`; CSS then hides any `.mi` whose `data-cat`
-  doesn't match. Categories are `all` / `cakes` / `small` / `bread`. Adding one
-  means touching the buttons, the cards' `data-cat`, and the three-selector
-  hide rule.
+  1. **House favourites** (`.favs`, "What people ask for") — a `--paper-2`
+     band of three `.pinned` photos, the largest on the menu so they lead.
+     Only items the copy already singles out: pistachio cake (house
+     favourite), cinnamon rolls, date maamoul (seasonal). They also stay in
+     the grid below so every category is complete. On phones the row becomes
+     a horizontal scroll-snap strip.
+  2. **"What we bake"** (`.menu-main`) — **one grid, one category at a time.**
+     A sticky side column holds the heading, the category tabs (with item
+     counts filled in by JS) and `.menu-foot` (prices / whole cakes /
+     delivery). Beside it, `.menu-grid` is **2 columns**: a category opens as
+     a 2 x 2 and `.menu-more` ("Show all 6 cakes" / "Show fewer") reveals the
+     rest; it hides itself when a category has 4 or fewer.
+
+  The client's calls, in order, so they are not undone: the photos were too
+  big (keep the grid beside the side column — a full-width 2-column grid
+  brings the huge cards back, which is why the stack only happens at 640px);
+  no "Everything" tab (the menu opens on Cakes); no separate section per
+  category (an earlier version gave each a full-bleed green band — rejected).
+
+  **Drinks replaced Bread** as the third category at the client's request.
+  Drinks are **not** on the published product list above, so the five drink
+  cards (coffee, latte, tea, hot chocolate, iced tea) are placeholders,
+  marked with a comment in the HTML — swap in what Nash really serves. Bread
+  is still a real product and still named in the story, meta and FAQ copy.
+
+  The contract: each `.mi` carries `data-cat` (`cakes` / `small` / `drinks`),
+  each `.mf-btn` a matching `data-show`, and the menu script sets `hidden` on
+  every item outside the current category or past the first four. Visibility
+  lives in JS, never the HTML, so without JS the whole menu shows. Footer
+  links select a category through `a[data-menu]`. Adding a category means a
+  new button, its items' `data-cat`, and a noun in `NOUN` for the button
+  label. The grid's cards are revealed by the menu script, not by
+  `data-rv="uncover"`: ScrollTrigger measures hidden items at zero height.
 - **Visit open/closed** — `VISIT_HOURS` in the last script block, in minutes
   after midnight, evaluated in `Asia/Damascus`. Closing at midnight is `24 * 60`;
   the formatter mods by 1440 so it prints `00:00` rather than `24:00`.
@@ -160,7 +199,10 @@ applied uniformly:
 
 They run through `ScrollTrigger.batch`, so a screenful of menu cards animates
 as one group instead of twenty independent triggers. Initial states are set in
-**JS, never CSS**, so nothing is invisible if the script fails to run.
+**JS, never CSS**, so nothing is invisible if the script fails to run. The
+uncover tween ends with `clearProps:'transform'`: without it GSAP leaves an
+inline `translate(0px, 0px)` on every photo, which silently beats the CSS
+hover zoom.
 
 Reduced motion is tiered, not switched off (see `.agents/skills/accessible-animation`):
 

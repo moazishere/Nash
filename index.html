@@ -208,8 +208,8 @@
   .nav-links a:hover{color:var(--ink);border-bottom-color:var(--gold);}
 
   /* ---------- Hero — full-bleed cinematic media ---------- */
-  /* The <img> is a stand-in for real Nash footage. Swapping in a <video>
-     needs no CSS change: both are styled by .hero-media > * below. */
+  /* Real Nash footage. Anything in .hero-media is styled by the rule below,
+     so it takes a <video> or an <img> alike. */
   .hero{
     position:relative;
     height:100svh;
@@ -284,6 +284,41 @@
   @keyframes heroPush{
     from{transform:scale(1.001);}
     to{transform:scale(1.09);}
+  }
+
+  /* The footage is a vertical phone clip. On a phone it fills the hero as
+     above. On a landscape screen, filling would mean a 4x upscale and
+     cropping the people out, so it becomes a pinned card instead: the same
+     white border and tilt as every photo on the site, over a blurred still
+     of itself, with the line moved to the left to make room. */
+  @media (min-aspect-ratio: 1/1){
+    .hero-media::before{
+      content:'';
+      position:absolute;
+      inset:-40px;
+      background:url('images/hero-poster.jpg') center 40% / cover;
+      filter:blur(30px) brightness(.5) saturate(.9);
+    }
+    .hero-media > .hero-video{
+      position:absolute;
+      z-index:1;                  /* above the scrim, below the line */
+      top:50%;
+      right:max(var(--page-pad), calc((100% - 1200px) / 2 + var(--page-pad)));
+      width:auto;
+      height:min(72svh, 640px);
+      aspect-ratio:9/16;
+      padding:8px;
+      background:#fff;
+      border-radius:var(--radius-photo);
+      box-shadow:0 2px 0 rgba(0,0,0,.2), 0 30px 60px -24px rgba(0,0,0,.7);
+      transform:translateY(-46%) rotate(2deg);
+      animation:none;
+    }
+    .hero-inner{align-items:flex-start;text-align:left;}
+    .hero-line{max-width:9ch;}
+  }
+  @media (min-aspect-ratio: 1/1) and (prefers-reduced-motion: no-preference){
+    .hero-media::before{animation:heroPush 26s ease-out forwards;}
   }
 
   /* Shared by the hero line and every rising heading */
@@ -438,74 +473,152 @@
 
   /* ---------- Menu (the showpiece) ---------- */
   /* Every item carries its own photograph. This is where people decide what
-     to buy, so it gets the largest images on the page. */
+     to buy. Two parts: a short row of house favourites, then the full menu
+     as one grid with category tabs. */
   .menu{
     background:var(--paper);
-    padding:clamp(72px, 11vh, 124px) 0;
+    padding-bottom:clamp(72px, 11vh, 124px);
   }
-  .menu-head{
+
+  /* House favourites — the items the copy already singles out, pulled up
+     and given more weight than the grid, so the menu has a point of view
+     before it lists everything. */
+  .favs{
+    background:var(--paper-2);
+    padding:clamp(72px, 11vh, 124px) 0 clamp(84px, 13vh, 148px);
+  }
+  .favs-head{
     display:flex;
     align-items:flex-end;
     justify-content:space-between;
-    gap:24px;
+    gap:14px 24px;
     flex-wrap:wrap;
-    padding-bottom:18px;
-    border-bottom:1px solid var(--rule);
   }
-  .menu-head h2{
+  .favs-head h2{
     font-size:clamp(34px, 5.4vw, 74px);
     font-weight:500;
     line-height:1;
   }
-  .menu-filter{
-    position:relative;
-    display:flex;
-    gap:clamp(14px, 2vw, 26px);
-    padding-bottom:8px;
-  }
-  .mf-btn{
-    font-family:var(--text);
-    font-size:15px;
-    color:var(--muted);
-    transition:color .2s ease;
-  }
-  .mf-btn.is-on{color:var(--ink);}
-  .mf-bar{
-    position:absolute;
-    left:0; bottom:0;
-    width:1px; height:2px;
-    background:var(--gold);
-    transform-origin:0 50%;
-    pointer-events:none;
-  }
-
-  .menu-board{
-    margin-top:clamp(34px, 5vh, 56px);
+  .favs-note{margin-bottom:6px;}
+  .favs-row{
+    margin-top:clamp(40px, 6vh, 72px);
     display:grid;
     grid-template-columns:repeat(3, 1fr);
-    gap:clamp(22px, 3.2vw, 46px) clamp(18px, 2.4vw, 34px);
+    gap:clamp(24px, 3.4vw, 52px);
+    align-items:start;
   }
-  /* The first card of each run leads at double width — an editorial grid
-     rather than a uniform tile field. */
-  .mi.is-lead{grid-column:span 2;}
-  .menu-board[data-view="cakes"] .mi:not([data-cat="cakes"]),
-  .menu-board[data-view="small"] .mi:not([data-cat="small"]),
-  .menu-board[data-view="bread"] .mi:not([data-cat="bread"]){display:none;}
-
-  .mi{margin:0;}
-  .mi-shot{
-    position:relative;
-    overflow:hidden;              /* the frame the photo is uncovered inside */
-    background:var(--paper-2);
-  }
-  .mi-shot img{
+  /* Pinned to a board, not set in a grid: a little tilt each, and the middle
+     one dropped so the row doesn't read as three equal tiles. */
+  .fav:nth-child(2){margin-top:clamp(28px, 6vh, 76px);}
+  .fav-shot{overflow:hidden;transform:rotate(-1.4deg);}
+  .fav:nth-child(2) .fav-shot{transform:rotate(1.1deg);}
+  .fav:nth-child(3) .fav-shot{transform:rotate(-.7deg);}
+  .fav-shot img{
     width:100%;
-    height:100%;
     aspect-ratio:4/5;
     object-fit:cover;
     transition:transform .5s cubic-bezier(.2,.6,.2,1);
   }
-  .mi.is-lead .mi-shot img{aspect-ratio:16/11;}
+  .fav:hover .fav-shot img{transform:scale(1.035);}
+  .fav-tag{
+    margin-top:22px;
+    font-style:italic;
+    font-size:14.5px;
+    color:var(--wine);
+  }
+  .fav-name{
+    margin-top:2px;
+    font-size:clamp(24px, 2.5vw, 34px);
+    font-weight:500;
+    line-height:1.1;
+  }
+  .fav-desc{
+    margin-top:8px;
+    font-size:15.5px;
+    line-height:1.6;
+    color:var(--muted);
+    max-width:36ch;
+  }
+
+  /* The full menu: one grid with category tabs beside it. A category opens
+     as a 2 x 2 and "Show all" reveals the rest, so the menu reads as a
+     short choice rather than a long catalogue. */
+  .menu-main{
+    display:grid;
+    grid-template-columns:minmax(0, 1fr) minmax(0, 1.65fr);
+    gap:clamp(36px, 6vw, 88px);
+    align-items:start;
+    padding-top:clamp(72px, 11vh, 124px);
+  }
+  /* The side column rides along while the grid scrolls past it. */
+  .menu-side{position:sticky;top:112px;}
+  .menu-side h2{
+    font-size:clamp(34px, 5vw, 64px);
+    font-weight:500;
+    line-height:1;
+  }
+
+  .menu-filter{
+    margin-top:clamp(24px, 4vh, 40px);
+    display:flex;
+    flex-direction:column;
+    border-top:1px solid var(--rule);
+  }
+  .mf-btn{
+    display:flex;
+    align-items:baseline;
+    justify-content:space-between;
+    gap:16px;
+    padding:13px 0 12px;
+    border-bottom:1px solid var(--rule);
+    font-family:var(--display);
+    font-size:clamp(20px, 1.9vw, 25px);
+    font-weight:500;
+    color:var(--muted);
+    text-align:left;
+    transition:color .2s ease;
+  }
+  .mf-btn:hover{color:var(--ink);}
+  .mf-btn.is-on{color:var(--ink);}
+  /* The active tab is marked the way a menu name is on hover: a short gold
+     rule, so the two read as the same gesture. */
+  .mf-btn::before{
+    content:'';
+    align-self:center;
+    flex:0 0 auto;
+    width:0;
+    height:1px;
+    margin-right:-16px;
+    background:var(--gold);
+    transition:width .3s cubic-bezier(.2,.6,.2,1), margin-right .3s cubic-bezier(.2,.6,.2,1);
+  }
+  .mf-btn.is-on::before{width:26px;margin-right:0;}
+  .mf-label{flex:1;}
+  .mf-count{
+    font-family:var(--text);
+    font-size:14px;
+    font-weight:400;
+    color:var(--muted);
+  }
+
+  .menu-grid{
+    display:grid;
+    grid-template-columns:repeat(2, minmax(0, 1fr));
+    gap:clamp(24px, 3.4vw, 44px) clamp(16px, 2.4vw, 30px);
+  }
+  .mi{margin:0;}
+  .mi[hidden]{display:none;}
+  .mi-shot{
+    position:relative;
+    overflow:hidden;
+    background:var(--paper-2);
+  }
+  .mi-shot img{
+    width:100%;
+    aspect-ratio:4/5;
+    object-fit:cover;
+    transition:transform .5s cubic-bezier(.2,.6,.2,1);
+  }
   .mi:hover .mi-shot img{transform:scale(1.035);}
 
   .mi-name{
@@ -527,13 +640,6 @@
     transition:width .35s cubic-bezier(.2,.6,.2,1);
   }
   .mi:hover .mi-name::after{width:44px;}
-  .mi-tag{
-    margin-left:8px;
-    font-family:var(--text);
-    font-style:italic;
-    font-size:13.5px;
-    color:var(--wine);
-  }
   .mi-desc{
     margin-top:6px;
     font-size:15px;
@@ -542,37 +648,77 @@
     max-width:42ch;
   }
 
-  /* No prices are published, so the menu says where to get them instead. */
-  .menu-foot{
-    margin-top:clamp(34px, 5vh, 56px);
-    padding-top:22px;
-    border-top:1px solid var(--rule);
-    display:flex;
-    gap:clamp(18px, 4vw, 60px);
-    flex-wrap:wrap;
+  .menu-more{
+    display:block;
+    margin-top:clamp(30px, 4.5vh, 48px);
+    padding:14px 26px;
+    border:1px solid var(--ink);
+    font-family:var(--text);
     font-size:15.5px;
-    line-height:1.7;
+    color:var(--ink);
+    transition:background .2s ease, color .2s ease;
+  }
+  .menu-more:hover{background:var(--ink);color:var(--paper);}
+  .menu-more[hidden]{display:none;}
+
+  /* No prices are published, so the menu says where to get them instead.
+     It sits under the tabs, in the room the grid leaves beside it. */
+  .menu-foot{
+    margin-top:clamp(28px, 5vh, 48px);
+    display:flex;
+    flex-direction:column;
+    gap:18px;
+    font-size:15px;
+    line-height:1.65;
     color:var(--muted);
   }
-  .menu-foot p{max-width:46ch;}
+  .menu-foot p{max-width:40ch;}
   .menu-foot a{color:var(--ink);border-bottom:1px solid var(--gold);}
   .menu-foot b{
     display:block;
     font-family:var(--display);
     font-weight:500;
-    font-size:19px;
+    font-size:18px;
     color:var(--ink);
-    margin-bottom:4px;
+    margin-bottom:2px;
   }
 
-  @media (max-width:900px){
-    .menu-board{grid-template-columns:repeat(2, 1fr);}
-    .mi.is-lead{grid-column:span 2;}
+  @media (max-width:640px){
+    .menu-main{grid-template-columns:1fr;}
+    .menu-side{position:static;}
+    /* Stacked, the tabs become a row and the notes move under the grid. */
+    .menu-filter{flex-direction:row;flex-wrap:wrap;gap:6px 22px;border-top:0;}
+    .mf-btn{padding:4px 0 6px;border-bottom:0;font-size:19px;gap:6px;}
+    .mf-btn::before{display:none;}
+    .mf-btn.is-on{box-shadow:inset 0 -2px 0 var(--gold);}
+    .mf-label{flex:none;}
+    .menu-foot{order:3;}
+    .menu-side{display:contents;}
+    .menu-side > h2{order:1;}
+    .menu-filter{order:1;margin-top:-18px;}
+    .menu-body{order:2;}
   }
-  @media (max-width:560px){
-    .menu-board{grid-template-columns:1fr;}
-    .mi.is-lead{grid-column:span 1;}
-    .mi.is-lead .mi-shot img{aspect-ratio:4/5;}
+  @media (max-width:640px){
+    .favs-head{flex-direction:column;align-items:flex-start;}
+    /* Three tall photos stacked is a long scroll before the menu even
+       starts; on a phone they become a swipeable row instead. */
+    .favs-row{
+      display:flex;
+      gap:16px;
+      margin-left:calc(var(--page-pad) * -1);
+      margin-right:calc(var(--page-pad) * -1);
+      padding:10px var(--page-pad) 14px;
+      overflow-x:auto;
+      scroll-snap-type:x mandatory;
+      scroll-padding-inline:var(--page-pad);
+      scrollbar-width:none;
+    }
+    .favs-row::-webkit-scrollbar{display:none;}
+    .fav{flex:0 0 64vw;scroll-snap-align:start;}
+    .fav:nth-child(2){margin-top:0;}
+    .mi-name{margin-top:10px;font-size:16.5px;}
+    .mi-desc{font-size:14px;line-height:1.5;}
+    .menu-more{width:100%;}
   }
 
   /* ---------- Visit ---------- */
@@ -855,9 +1001,6 @@
 
   /* ---------- Responsive ---------- */
   @media (max-width: 980px){
-    .feat-row{grid-template-columns:repeat(3, 1fr);}
-    .feat-card:nth-child(n+4){display:none;}
-    .menu-board{grid-template-columns:1fr 1fr;}
     .visit-grid{grid-template-columns:1fr;gap:40px;}
     .faq-inner{grid-template-columns:1fr;gap:30px;}
     .footer-top{grid-template-columns:1fr 1fr;}
@@ -868,22 +1011,6 @@
     .nav-links{display:none;}
     .navbar{grid-template-columns:1fr;justify-items:center;}
     .logo{grid-column:1;}
-    .menu-head{flex-direction:column;align-items:flex-start;gap:18px;}
-    .menu-filter{flex-wrap:wrap;}
-    .menu-board{grid-template-columns:1fr;}
-    .menu-board:not([data-view="all"]) .menu-group ul{columns:1;}
-    .featured{margin-left:calc(var(--page-pad) * -1);margin-right:calc(var(--page-pad) * -1);}
-    .feat-row{
-      display:flex;
-      gap:14px;
-      overflow-x:auto;
-      scroll-snap-type:x mandatory;
-      padding:0 var(--page-pad) 4px;
-      scrollbar-width:none;
-    }
-    .feat-row::-webkit-scrollbar{display:none;}
-    .feat-card{flex:0 0 62vw;scroll-snap-align:start;}
-    .feat-card:nth-child(n+4){display:block;}
     .cta-banner-inner{flex-direction:column;align-items:flex-start;}
     .cta-btn{width:100%;text-align:center;justify-content:center;}
     .footer-top{grid-template-columns:1fr;gap:34px;}
@@ -911,13 +1038,15 @@
   </div>
 
   <!-- HERO -->
-  <!-- Placeholder: swap the <img> for real Nash footage as
-       <video autoplay muted loop playsinline poster="…"> — no CSS change needed -->
+  <!-- Real Nash footage: a vertical phone clip (360 x 640). Muted, because
+       autoplay only works muted and a hero should never make noise; there
+       are no controls, so it cannot be unmuted. -->
   <section class="hero">
     <div class="hero-media">
-      <img src="https://images.unsplash.com/photo-1555507036-ab1f4038808a?q=85&w=2000&auto=format&fit=crop"
-           alt="Croissants on a dark counter under a fall of flour"
-           fetchpriority="high" decoding="async">
+      <video class="hero-video" autoplay muted loop playsinline disablepictureinpicture
+             preload="auto" poster="images/hero-poster.jpg" aria-hidden="true" tabindex="-1">
+        <source src="video.mp4" type="video/mp4">
+      </video>
     </div>
     <div class="container hero-inner">
       <h1 class="hero-line">Baked with love</h1>
@@ -942,11 +1071,11 @@
 
       <div class="story-media">
         <figure class="pinned story-shot" data-rv="uncover">
-          <img src="https://images.unsplash.com/photo-1587241321921-91a834d6d191?q=80&w=900&auto=format&fit=crop"
+          <img src="images/image1.jpeg"
                alt="The Nash counter, trays of bread and pastry lined up under the lights" loading="lazy">
         </figure>
         <figure class="pinned story-inset" data-rv="uncover">
-          <img src="https://images.unsplash.com/photo-1517686469429-8bdb88b9f907?q=80&w=500&auto=format&fit=crop"
+          <img src="images/image2.jpeg"
                alt="Hands kneading dough on a floured board" loading="lazy">
         </figure>
         <span class="stamp" aria-hidden="true">
@@ -962,133 +1091,182 @@
   <!-- MENU -->
   <!-- Placeholder photography: swap every shot for real Nash photos -->
   <section class="menu" id="menu">
-    <div class="container">
-      <div class="menu-head">
+
+    <!-- House favourites: only items the copy already singles out.
+         They stay in the full menu below too, so every category is complete. -->
+    <div class="favs">
+      <div class="container">
+        <div class="favs-head">
+          <h2 data-rv="rise">What people ask for</h2>
+          <p class="note favs-note" data-rv="fade">first time? start here</p>
+        </div>
+        <div class="favs-row">
+          <article class="fav">
+            <figure class="pinned fav-shot" data-rv="uncover">
+              <img src="https://images.unsplash.com/photo-1571115177098-24ec42ed204d?q=80&w=900&auto=format&fit=crop" alt="Pistachio cake" loading="lazy">
+            </figure>
+            <p class="fav-tag">House favourite</p>
+            <h3 class="fav-name">Pistachio cake</h3>
+            <p class="fav-desc">Ground pistachio in the crumb, rosewater in the cream.</p>
+          </article>
+          <article class="fav">
+            <figure class="pinned fav-shot" data-rv="uncover">
+              <img src="https://images.unsplash.com/photo-1509365465985-25d11c17e812?q=80&w=900&auto=format&fit=crop" alt="Cinnamon rolls" loading="lazy">
+            </figure>
+            <p class="fav-tag">First out of the oven</p>
+            <h3 class="fav-name">Cinnamon rolls</h3>
+            <p class="fav-desc">Iced while still warm. They rarely last the morning.</p>
+          </article>
+          <article class="fav">
+            <figure class="pinned fav-shot" data-rv="uncover">
+              <img src="https://images.unsplash.com/photo-1558961363-fa8fdf82db35?q=80&w=900&auto=format&fit=crop" alt="Date maamoul" loading="lazy">
+            </figure>
+            <p class="fav-tag">Seasonal</p>
+            <h3 class="fav-name">Date maamoul</h3>
+            <p class="fav-desc">Semolina shortbread pressed around date paste.</p>
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <!-- One grid, one category at a time: a 2 x 2 first, "Show all" for the
+         rest. Without JS every item shows. -->
+    <div class="container menu-main">
+      <div class="menu-side">
         <h2 data-rv="rise">What we bake</h2>
-        <div class="menu-filter" role="tablist" aria-label="Filter the menu">
-          <button class="mf-btn is-on" role="tab" aria-selected="true" data-show="all">Everything</button>
-          <button class="mf-btn" role="tab" aria-selected="false" data-show="cakes">Cakes</button>
-          <button class="mf-btn" role="tab" aria-selected="false" data-show="small">Cookies &amp; rolls</button>
-          <button class="mf-btn" role="tab" aria-selected="false" data-show="bread">Bread</button>
-          <span class="mf-bar" aria-hidden="true"></span>
+        <div class="menu-filter" role="group" aria-label="Menu categories">
+          <button class="mf-btn is-on" aria-pressed="true" aria-controls="menu-grid" data-show="cakes"><span class="mf-label">Cakes</span><span class="mf-count">6</span></button>
+          <button class="mf-btn" aria-pressed="false" aria-controls="menu-grid" data-show="small"><span class="mf-label">Cookies &amp; rolls</span><span class="mf-count">5</span></button>
+          <button class="mf-btn" aria-pressed="false" aria-controls="menu-grid" data-show="drinks"><span class="mf-label">Drinks</span><span class="mf-count">5</span></button>
+        </div>
+        <div class="menu-foot">
+          <p><b>Prices are on the board</b>They move with what ingredients cost, so we
+            would rather tell you at the counter than post a number that goes stale.</p>
+          <p><b>Whole cakes to order</b>Anything on the cake list, made to size.
+            Call <a href="tel:+963987514666">0987 514 666</a> a day ahead.</p>
+          <p><b>Delivery</b>We are on <a href="https://beeorder.com/" target="_blank" rel="noopener">BeeOrder</a>
+            and <a href="https://movo.sy/" target="_blank" rel="noopener">Movo</a>.</p>
         </div>
       </div>
 
-      <div class="menu-board" data-view="all">
-        <article class="mi is-lead" data-cat="cakes">
-          <div class="mi-shot" data-rv="uncover">
-            <img src="https://images.unsplash.com/photo-1578985545062-69928b1d9587?q=80&w=1100&auto=format&fit=crop" alt="Chocolate layer cake" loading="lazy">
-          </div>
-          <span class="mi-name">Chocolate layer cake</span>
-          <p class="mi-desc">Dark sponge, chocolate cream, ganache poured over the top.</p>
-        </article>
-        <article class="mi" data-cat="cakes">
-          <div class="mi-shot" data-rv="uncover">
-            <img src="https://images.unsplash.com/photo-1535141192574-5d4897c12636?q=80&w=760&auto=format&fit=crop" alt="Berry cream cake" loading="lazy">
-          </div>
-          <span class="mi-name">Berry cream cake</span>
-          <p class="mi-desc">Vanilla sponge, whipped cream, whatever fruit is good that week.</p>
-        </article>
-        <article class="mi" data-cat="cakes">
-          <div class="mi-shot" data-rv="uncover">
-            <img src="https://images.unsplash.com/photo-1571115177098-24ec42ed204d?q=80&w=760&auto=format&fit=crop" alt="Pistachio cake" loading="lazy">
-          </div>
-          <span class="mi-name">Pistachio cake <em class="mi-tag">house favourite</em></span>
-          <p class="mi-desc">Ground pistachio in the crumb, rosewater in the cream.</p>
-        </article>
-        <article class="mi" data-cat="cakes">
-          <div class="mi-shot" data-rv="uncover">
-            <img src="https://images.unsplash.com/photo-1519915028121-7d3463d20b13?q=80&w=760&auto=format&fit=crop" alt="Lemon meringue tart" loading="lazy">
-          </div>
-          <span class="mi-name">Lemon meringue tart</span>
-          <p class="mi-desc">Sharp lemon curd under torched meringue.</p>
-        </article>
-        <article class="mi" data-cat="cakes">
-          <div class="mi-shot" data-rv="uncover">
-            <img src="https://images.unsplash.com/photo-1533134242443-d4fd215305ad?q=80&w=760&auto=format&fit=crop" alt="Cheesecake slice" loading="lazy">
-          </div>
-          <span class="mi-name">Cheesecake slice</span>
-          <p class="mi-desc">Baked, not set. Plain or with berries.</p>
-        </article>
-        <article class="mi" data-cat="cakes">
-          <div class="mi-shot" data-rv="uncover">
-            <img src="https://images.unsplash.com/photo-1550617931-e17a7b70dce2?q=80&w=760&auto=format&fit=crop" alt="Chocolate cupcakes" loading="lazy">
-          </div>
-          <span class="mi-name">Chocolate cupcakes</span>
-          <p class="mi-desc">Small, dark, and iced by hand every morning.</p>
-        </article>
-        <article class="mi is-lead" data-cat="small">
-          <div class="mi-shot" data-rv="uncover">
-            <img src="https://images.unsplash.com/photo-1509365465985-25d11c17e812?q=80&w=1100&auto=format&fit=crop" alt="Cinnamon rolls" loading="lazy">
-          </div>
-          <span class="mi-name">Cinnamon rolls</span>
-          <p class="mi-desc">Out of the oven first thing and iced while still warm. They rarely last the morning.</p>
-        </article>
-        <article class="mi" data-cat="small">
-          <div class="mi-shot" data-rv="uncover">
-            <img src="https://images.unsplash.com/photo-1499636136210-6f4ee915583e?q=80&w=760&auto=format&fit=crop" alt="Chocolate chunk cookies" loading="lazy">
-          </div>
-          <span class="mi-name">Chocolate chunk cookies</span>
-          <p class="mi-desc">Soft in the middle, baked in small batches all day.</p>
-        </article>
-        <article class="mi" data-cat="small">
-          <div class="mi-shot" data-rv="uncover">
-            <img src="https://images.unsplash.com/photo-1590080874088-eec64895b423?q=80&w=760&auto=format&fit=crop" alt="Pistachio cookies" loading="lazy">
-          </div>
-          <span class="mi-name">Pistachio cookies</span>
-          <p class="mi-desc">Short and crumbly, rolled in chopped pistachio.</p>
-        </article>
-        <article class="mi" data-cat="small">
-          <div class="mi-shot" data-rv="uncover">
-            <img src="https://images.unsplash.com/photo-1555507036-ab1f4038808a?q=80&w=760&auto=format&fit=crop" alt="Almond croissant" loading="lazy">
-          </div>
-          <span class="mi-name">Almond croissant</span>
-          <p class="mi-desc">Filled with almond cream and baked a second time.</p>
-        </article>
-        <article class="mi" data-cat="small">
-          <div class="mi-shot" data-rv="uncover">
-            <img src="https://images.unsplash.com/photo-1558961363-fa8fdf82db35?q=80&w=760&auto=format&fit=crop" alt="Date maamoul" loading="lazy">
-          </div>
-          <span class="mi-name">Date maamoul <em class="mi-tag">seasonal</em></span>
-          <p class="mi-desc">Semolina shortbread pressed around date paste.</p>
-        </article>
-        <article class="mi is-lead" data-cat="bread">
-          <div class="mi-shot" data-rv="uncover">
-            <img src="https://images.unsplash.com/photo-1549931319-a545dcf3bc73?q=80&w=1100&auto=format&fit=crop" alt="Country loaf" loading="lazy">
-          </div>
-          <span class="mi-name">Country loaf</span>
-          <p class="mi-desc">Proved overnight, baked dark. Good for three days, better on the first.</p>
-        </article>
-        <article class="mi" data-cat="bread">
-          <div class="mi-shot" data-rv="uncover">
-            <img src="https://images.unsplash.com/photo-1509440159596-0249088772ff?q=80&w=760&auto=format&fit=crop" alt="Seeded loaf" loading="lazy">
-          </div>
-          <span class="mi-name">Seeded loaf</span>
-          <p class="mi-desc">Sesame, flax and sunflower through the dough and across the crust.</p>
-        </article>
-        <article class="mi" data-cat="bread">
-          <div class="mi-shot" data-rv="uncover">
-            <img src="https://images.unsplash.com/photo-1608198093002-ad4e005484ec?q=80&w=760&auto=format&fit=crop" alt="Baguette" loading="lazy">
-          </div>
-          <span class="mi-name">Baguette</span>
-          <p class="mi-desc">Baked twice a day. Ask which batch is newest.</p>
-        </article>
-        <article class="mi" data-cat="bread">
-          <div class="mi-shot" data-rv="uncover">
-            <img src="https://images.unsplash.com/photo-1568254183919-78a4f43a2877?q=80&w=760&auto=format&fit=crop" alt="Soft milk buns" loading="lazy">
-          </div>
-          <span class="mi-name">Soft milk buns</span>
-          <p class="mi-desc">For sandwiches, or for eating on the walk home.</p>
-        </article>
-      </div>
-
-      <div class="menu-foot">
-        <p><b>Prices are on the board</b>They move with what ingredients cost, so we
-          would rather tell you at the counter than post a number that goes stale.</p>
-        <p><b>Whole cakes to order</b>Anything on the cake list, made to size.
-          Call <a href="tel:+963987514666">0987 514 666</a> a day ahead.</p>
-        <p><b>Delivery</b>We are on <a href="https://beeorder.com/" target="_blank" rel="noopener">BeeOrder</a>
-          and <a href="https://movo.sy/" target="_blank" rel="noopener">Movo</a>.</p>
+      <div class="menu-body">
+        <div class="menu-grid" id="menu-grid" aria-live="polite">
+          <article class="mi" data-cat="cakes">
+            <div class="mi-shot">
+              <img src="https://images.unsplash.com/photo-1578985545062-69928b1d9587?q=80&w=760&auto=format&fit=crop" alt="Chocolate layer cake" loading="lazy">
+            </div>
+            <span class="mi-name">Chocolate layer cake</span>
+            <p class="mi-desc">Dark sponge, chocolate cream, ganache poured over the top.</p>
+          </article>
+          <article class="mi" data-cat="cakes">
+            <div class="mi-shot">
+              <img src="https://images.unsplash.com/photo-1535141192574-5d4897c12636?q=80&w=760&auto=format&fit=crop" alt="Berry cream cake" loading="lazy">
+            </div>
+            <span class="mi-name">Berry cream cake</span>
+            <p class="mi-desc">Vanilla sponge, whipped cream, whatever fruit is good that week.</p>
+          </article>
+          <article class="mi" data-cat="cakes">
+            <div class="mi-shot">
+              <img src="https://images.unsplash.com/photo-1571115177098-24ec42ed204d?q=80&w=760&auto=format&fit=crop" alt="Pistachio cake" loading="lazy">
+            </div>
+            <span class="mi-name">Pistachio cake</span>
+            <p class="mi-desc">Ground pistachio in the crumb, rosewater in the cream.</p>
+          </article>
+          <article class="mi" data-cat="cakes">
+            <div class="mi-shot">
+              <img src="https://images.unsplash.com/photo-1519915028121-7d3463d20b13?q=80&w=760&auto=format&fit=crop" alt="Lemon meringue tart" loading="lazy">
+            </div>
+            <span class="mi-name">Lemon meringue tart</span>
+            <p class="mi-desc">Sharp lemon curd under torched meringue.</p>
+          </article>
+          <article class="mi" data-cat="cakes">
+            <div class="mi-shot">
+              <img src="https://images.unsplash.com/photo-1533134242443-d4fd215305ad?q=80&w=760&auto=format&fit=crop" alt="Cheesecake slice" loading="lazy">
+            </div>
+            <span class="mi-name">Cheesecake slice</span>
+            <p class="mi-desc">Baked, not set. Plain or with berries.</p>
+          </article>
+          <article class="mi" data-cat="cakes">
+            <div class="mi-shot">
+              <img src="https://images.unsplash.com/photo-1550617931-e17a7b70dce2?q=80&w=760&auto=format&fit=crop" alt="Chocolate cupcakes" loading="lazy">
+            </div>
+            <span class="mi-name">Chocolate cupcakes</span>
+            <p class="mi-desc">Small, dark, and iced by hand every morning.</p>
+          </article>
+          <article class="mi" data-cat="small">
+            <div class="mi-shot">
+              <img src="https://images.unsplash.com/photo-1509365465985-25d11c17e812?q=80&w=760&auto=format&fit=crop" alt="Cinnamon rolls" loading="lazy">
+            </div>
+            <span class="mi-name">Cinnamon rolls</span>
+            <p class="mi-desc">Out of the oven first thing and iced while still warm. They rarely last the morning.</p>
+          </article>
+          <article class="mi" data-cat="small">
+            <div class="mi-shot">
+              <img src="https://images.unsplash.com/photo-1499636136210-6f4ee915583e?q=80&w=760&auto=format&fit=crop" alt="Chocolate chunk cookies" loading="lazy">
+            </div>
+            <span class="mi-name">Chocolate chunk cookies</span>
+            <p class="mi-desc">Soft in the middle, baked in small batches all day.</p>
+          </article>
+          <article class="mi" data-cat="small">
+            <div class="mi-shot">
+              <img src="https://images.unsplash.com/photo-1590080874088-eec64895b423?q=80&w=760&auto=format&fit=crop" alt="Pistachio cookies" loading="lazy">
+            </div>
+            <span class="mi-name">Pistachio cookies</span>
+            <p class="mi-desc">Short and crumbly, rolled in chopped pistachio.</p>
+          </article>
+          <article class="mi" data-cat="small">
+            <div class="mi-shot">
+              <img src="https://images.unsplash.com/photo-1555507036-ab1f4038808a?q=80&w=760&auto=format&fit=crop" alt="Almond croissant" loading="lazy">
+            </div>
+            <span class="mi-name">Almond croissant</span>
+            <p class="mi-desc">Filled with almond cream and baked a second time.</p>
+          </article>
+          <article class="mi" data-cat="small">
+            <div class="mi-shot">
+              <img src="https://images.unsplash.com/photo-1558961363-fa8fdf82db35?q=80&w=760&auto=format&fit=crop" alt="Date maamoul" loading="lazy">
+            </div>
+            <span class="mi-name">Date maamoul</span>
+            <p class="mi-desc">Semolina shortbread pressed around date paste. Seasonal.</p>
+          </article>
+          <!-- PLACEHOLDER: drinks are not on Nash's published product list.
+               Replace names, copy and photos with what they really serve. -->
+          <article class="mi" data-cat="drinks">
+            <div class="mi-shot">
+              <img src="https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?q=80&w=760&auto=format&fit=crop" alt="A cup of black coffee on a wooden table" loading="lazy">
+            </div>
+            <span class="mi-name">Coffee</span>
+            <p class="mi-desc">Hot and black, and good with anything from the cake list.</p>
+          </article>
+          <article class="mi" data-cat="drinks">
+            <div class="mi-shot">
+              <img src="https://images.unsplash.com/photo-1497636577773-f1231844b336?q=80&w=760&auto=format&fit=crop" alt="A latte with leaf art in a white cup" loading="lazy">
+            </div>
+            <span class="mi-name">Latte</span>
+            <p class="mi-desc">Coffee with steamed milk.</p>
+          </article>
+          <article class="mi" data-cat="drinks">
+            <div class="mi-shot">
+              <img src="https://images.unsplash.com/photo-1576092768241-dec231879fc3?q=80&w=760&auto=format&fit=crop" alt="Black tea in a glass beside loose tea bags" loading="lazy">
+            </div>
+            <span class="mi-name">Tea</span>
+            <p class="mi-desc">Black tea, served in a glass.</p>
+          </article>
+          <article class="mi" data-cat="drinks">
+            <div class="mi-shot">
+              <img src="https://images.unsplash.com/photo-1517578239113-b03992dcdd25?q=80&w=760&auto=format&fit=crop" alt="A cup of thick hot chocolate on a saucer" loading="lazy">
+            </div>
+            <span class="mi-name">Hot chocolate</span>
+            <p class="mi-desc">Thick and dark, for the colder evenings.</p>
+          </article>
+          <article class="mi" data-cat="drinks">
+            <div class="mi-shot">
+              <img src="https://images.unsplash.com/photo-1556679343-c7306c1976bc?q=80&w=760&auto=format&fit=crop" alt="Iced tea in a tall glass with lime" loading="lazy">
+            </div>
+            <span class="mi-name">Iced tea</span>
+            <p class="mi-desc">Over ice with a slice of lime.</p>
+          </article>
+        </div>
+        <button class="menu-more" aria-controls="menu-grid" aria-expanded="false" hidden>Show all</button>
       </div>
     </div>
   </section>
@@ -1205,9 +1383,9 @@
         <div class="footer-col">
           <h5>Menu</h5>
           <ul>
-            <li><a href="#menu">Cakes</a></li>
-            <li><a href="#menu">Cookies &amp; rolls</a></li>
-            <li><a href="#menu">Bread</a></li>
+            <li><a href="#menu" data-menu="cakes">Cakes</a></li>
+            <li><a href="#menu" data-menu="small">Cookies &amp; rolls</a></li>
+            <li><a href="#menu" data-menu="drinks">Drinks</a></li>
           </ul>
         </div>
         <div class="footer-col">
@@ -1255,6 +1433,17 @@
   });
 
 
+  // ---------- Hero video: reduced motion ----------
+  // A looping video is continuous motion, so under reduced motion it stops on
+  // its poster frame. Kept apart from the GSAP block so it runs even if the
+  // CDN scripts fail.
+  (() => {
+    const video = document.querySelector('.hero-video');
+    if(!video || !window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    video.removeAttribute('autoplay');
+    video.pause();
+  })();
+
   // ---------- Hero: the load sequence ----------
   (() => {
     if(!window.gsap) return;
@@ -1265,7 +1454,9 @@
     // Smooth-scroll hijacking is a vestibular trigger, so it is removed
     // outright under reduced motion rather than shortened.
     if(!reduce && window.Lenis){
-      const lenis = new Lenis({duration:1.1, smoothWheel:true, anchors:true});
+      // Lenis ignores scroll-margin-top, so anchor jumps need the navbar
+      // clearance passed in here too, or targets land under the fixed bar.
+      const lenis = new Lenis({duration:1.1, smoothWheel:true, anchors:{offset:-86}});
       lenis.on('scroll', ScrollTrigger.update);
       gsap.ticker.add(t => lenis.raf(t * 1000));
       gsap.ticker.lagSmoothing(0);
@@ -1339,46 +1530,89 @@
       onEnter: b => b.forEach((f, i) => {
         const img = f.querySelector('img');
         gsap.set(f, {autoAlpha:1, delay:i * .08});
-        if(img) gsap.to(img, {yPercent:0, scale:1, duration:1, ease:'power3.out', delay:i * .08});
+        // clearProps: GSAP otherwise leaves an inline transform behind, which
+        // beats the CSS hover zoom on every menu photo.
+        if(img) gsap.to(img, {yPercent:0, scale:1, duration:1, ease:'power3.out', delay:i * .08,
+                              clearProps:'transform'});
       })
     });
   })();
 
-  // ---------- Menu board: filter + hover photo ----------
+  // ---------- Menu: category tabs + "Show all" ----------
+  // One category at a time. It opens as a 2 x 2 and the button reveals the
+  // rest. Visibility is set here, not in the HTML, so without JS the whole
+  // menu simply shows.
   (() => {
     const menu = document.querySelector('.menu');
-    const board = menu.querySelector('.menu-board');
-    const btns = [...menu.querySelectorAll('.mf-btn')];
-    const bar = menu.querySelector('.mf-bar');
+    const grid = menu.querySelector('.menu-grid');
+    const items = [...grid.querySelectorAll('.mi')];
+    const tabs = [...menu.querySelectorAll('.mf-btn')];
+    const more = menu.querySelector('.menu-more');
+    const FIRST = 4;
+    const NOUN = {cakes:'cakes', small:'cookies & rolls', drinks:'drinks'};
     const hasGsap = !!window.gsap;
     const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    let view = tabs.find(t => t.classList.contains('is-on')).dataset.show;
+    let open = false;
 
-    const moveBar = (btn, instant) => {
-      const x = btn.offsetLeft, w = btn.offsetWidth;
-      if(hasGsap && !instant && !reduce) gsap.to(bar, {x, scaleX:w, duration:.35, ease:'power3.out'});
-      else bar.style.transform = `translateX(${x}px) scaleX(${w})`;
+    tabs.forEach(t => {
+      t.querySelector('.mf-count').textContent = items.filter(i => i.dataset.cat === t.dataset.show).length;
+    });
+
+    const reveal = els => {
+      if(!hasGsap || !els.length) return;
+      if(reduce){ gsap.fromTo(els, {autoAlpha:0}, {autoAlpha:1, duration:.2, stagger:.03, ease:'none'}); return; }
+      gsap.fromTo(els, {autoAlpha:0, y:18}, {autoAlpha:1, y:0, duration:.55, ease:'power2.out',
+                                             stagger:.07, clearProps:'transform'});
     };
-    const place = () => moveBar(btns.find(b => b.classList.contains('is-on')), true);
-    document.fonts ? document.fonts.ready.then(place) : place();
-    window.addEventListener('resize', place);
 
-    btns.forEach(btn => btn.addEventListener('click', () => {
-      if(btn.classList.contains('is-on')) return;
-      btns.forEach(b => {
-        const on = b === btn;
-        b.classList.toggle('is-on', on);
-        b.setAttribute('aria-selected', on);
+    // Shows the current category and returns the items that just appeared.
+    const render = () => {
+      const was = new Set(items.filter(i => !i.hidden));
+      const list = items.filter(i => i.dataset.cat === view);
+      items.forEach(i => { i.hidden = true; });
+      list.forEach((i, n) => { i.hidden = !open && n >= FIRST; });
+      more.hidden = list.length <= FIRST;
+      more.textContent = open ? 'Show fewer' : `Show all ${list.length} ${NOUN[view]}`;
+      more.setAttribute('aria-expanded', open);
+      if(window.ScrollTrigger) ScrollTrigger.refresh();
+      return items.filter(i => !i.hidden && !was.has(i));
+    };
+
+    const select = cat => {
+      if(cat === view) return;
+      view = cat;
+      open = false;
+      tabs.forEach(t => {
+        const on = t.dataset.show === cat;
+        t.classList.toggle('is-on', on);
+        t.setAttribute('aria-pressed', on);
       });
-      moveBar(btn);
-      const swap = () => { board.dataset.view = btn.dataset.show; };
-      if(!hasGsap || reduce){ swap(); return; }
-      gsap.to(board, {autoAlpha:0, y:10, duration:.18, ease:'power1.in', onComplete:() => {
-        swap();
-        if(window.ScrollTrigger) ScrollTrigger.refresh();
-        gsap.fromTo(board, {autoAlpha:0, y:10}, {autoAlpha:1, y:0, duration:.35, ease:'power2.out'});
-      }});
-    }));
+      reveal(render());
+    };
 
+    tabs.forEach(t => t.addEventListener('click', () => select(t.dataset.show)));
+    document.querySelectorAll('a[data-menu]').forEach(a =>
+      a.addEventListener('click', () => select(a.dataset.menu)));
+
+    more.addEventListener('click', () => {
+      open = !open;
+      if(open){ reveal(render()); return; }
+      // Collapsing removes rows above the button; keep the button where the
+      // reader's eye is rather than letting the page jump past it.
+      const before = more.getBoundingClientRect().top;
+      render();
+      const shift = more.getBoundingClientRect().top - before;
+      if(shift) window.scrollBy(0, shift);
+    });
+
+    // First paint: hide the opening four until the grid scrolls into view.
+    const first = render();
+    if(hasGsap && window.ScrollTrigger){
+      gsap.set(first, {autoAlpha:0});
+      ScrollTrigger.create({trigger:grid, start:'top 88%', once:true,
+        onEnter:() => reveal(first.filter(i => !i.hidden))});
+    }
   })();
 
   // ---------- Visit: live open/closed status (Damascus time) ----------
