@@ -1,0 +1,1407 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nash Bakery — Damascus</title>
+<meta name="description" content="Nash Bakery in Damascus. Cakes, cookies, cinnamon rolls and fresh bread, open every day 10:00–00:00.">
+<meta name="theme-color" content="#23524A">
+<link rel="icon" href="images/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="images/apple-touch-icon.png">
+
+<!-- Link previews. Set og:url to the real domain once the site is live. -->
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Nash Bakery">
+<meta property="og:title" content="Nash Bakery — Damascus">
+<meta property="og:description" content="Cakes, cookies, cinnamon rolls and fresh bread in Damascus. Open every day 10:00–00:00.">
+<meta property="og:image" content="images/og.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Nash Bakery — artisanal excellence">
+<meta property="og:url" content="">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Newsreader:opsz,wght@6..72,300;6..72,400;6..72,500;6..72,600&family=Caveat:wght@500;600&display=swap" rel="stylesheet">
+<style>
+
+  /* ============================================================
+     NASH BAKERY — warm editorial
+     Palette sampled from the studio reference in example.jpg:
+     cream paper, deep teal-green grounds, goldenrod display type,
+     wine wordmark. Gold is only ever type; green is only ever ground.
+     ============================================================ */
+
+  :root{
+    /* core palette */
+    --paper:#FAF6F3;      /* warm off-white ground            */
+    --paper-2:#F2EBE2;    /* deeper cream, alternating bands  */
+    --ink:#221E1B;        /* warm near-black, body text       */
+    --green:#23524A;      /* deep teal-green, full-bleed      */
+    --green-deep:#1A3E38; /* footer / pressed states          */
+    --gold:#B8811A;       /* goldenrod — display type on cream (3.2:1, large text) */
+    --butter:#F3C95E;     /* light gold — type on green        */
+    --wine:#9E2B3A;       /* wordmark, small marks             */
+
+    /* derived */
+    --ink-soft:#4A423B;
+    --muted:#736A61;      /* 4.9:1 on paper — do not lighten */
+    --rule:#E2D8CC;
+    --rule-green:rgba(243,201,94,.28);
+
+    /* type */
+    --display:'Fraunces', Georgia, serif;
+    --text:'Newsreader', Georgia, serif;
+    --hand:'Caveat', cursive;
+
+    /* the reference keeps corners essentially square; only the
+       pinned photos get a hair of rounding */
+    --radius-photo:2px;
+    --page-pad: 6vw;
+  }
+
+  *{margin:0;padding:0;box-sizing:border-box;}
+
+  html{scroll-behavior:smooth;}
+
+  body{
+    font-family:var(--text);
+    font-optical-sizing:auto;
+    font-size:17px;
+    line-height:1.65;      /* serif body wants a touch more */
+    background:var(--paper);
+    color:var(--ink-soft);
+    -webkit-font-smoothing:antialiased;
+    overflow-x:hidden;
+  }
+
+  img{display:block;max-width:100%;}
+
+  a{color:inherit;text-decoration:none;}
+
+  ul{list-style:none;}
+
+  button{font-family:inherit;cursor:pointer;border:none;background:none;}
+
+  h1,h2,h3,h4,h5{
+    font-family:var(--display);
+    font-optical-sizing:auto;
+    color:var(--ink);
+    font-weight:600;
+    line-height:1.05;
+    letter-spacing:-.01em;
+  }
+
+  /* Visible keyboard focus everywhere, on both grounds */
+  :focus-visible{
+    outline:2px solid var(--wine);
+    outline-offset:3px;
+  }
+  .on-green :focus-visible{outline-color:var(--butter);}
+
+  .page-frame{overflow:clip;}
+  section[id]{scroll-margin-top:86px;}   /* clears the fixed navbar */
+
+  .container{
+    max-width:1200px;
+    margin:0 auto;
+    padding-left:var(--page-pad);
+    padding-right:var(--page-pad);
+  }
+
+  /* A photo "pinned to the board": thin white border, slight tilt.
+     Used everywhere an image appears, so the whole site shares one gesture. */
+  .pinned{
+    background:#fff;
+    padding:7px;
+    border-radius:var(--radius-photo);
+    box-shadow:0 1px 0 rgba(34,30,27,.18), 0 14px 28px -18px rgba(34,30,27,.5);
+  }
+  .pinned img{border-radius:1px;}
+
+  /* Handwritten margin note, as in the reference. Used sparingly. */
+  .note{
+    font-family:var(--hand);
+    font-size:clamp(19px, 2.2vw, 27px);
+    line-height:1.25;
+    color:var(--ink);
+    transform:rotate(-4deg);
+  }
+  .on-green .note{color:var(--butter);}
+
+  .eyebrow-pill{
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
+    font-family:var(--text);
+    color:var(--muted);
+    font-weight:500;
+    font-size:14px;
+    font-style:italic;
+  }
+
+  /* ---------- Navbar (cream, centred wordmark as in the reference) ---------- */
+  .navbar-wrap{
+    /* Fixed, not sticky: sticky keeps its place in the flow, so the hero
+       began below it and a cream band cut across the top of the footage. */
+    position:fixed;
+    top:0; left:0; right:0;
+    z-index:100;
+    background:var(--paper);
+    transition:background .25s ease, box-shadow .25s ease;
+  }
+  .navbar-wrap.scrolled{box-shadow:0 1px 0 var(--rule);}
+  /* Over the full-bleed hero the bar floats; a cream band across the top
+     cuts the footage in half and kills the cinematic read. The JS already
+     toggles .scrolled past 40px. */
+  .navbar-wrap:not(.scrolled){background:transparent;}
+  .navbar-wrap:not(.scrolled) .logo{color:var(--paper);}
+  .navbar-wrap:not(.scrolled) .logo .est{color:rgba(250,246,243,.62);}
+  .navbar-wrap:not(.scrolled) .nav-links{color:rgba(250,246,243,.86);}
+  .navbar-wrap:not(.scrolled) .nav-links a:hover{
+    color:#fff;
+    border-bottom-color:rgba(250,246,243,.7);
+  }
+  .navbar{
+    max-width:1200px;
+    margin:0 auto;
+    display:grid;
+    grid-template-columns:1fr auto 1fr;
+    align-items:center;
+    gap:20px;
+    padding:18px var(--page-pad);
+  }
+  .logo{
+    grid-column:2;
+    text-align:center;
+    font-family:var(--display);
+    font-weight:600;
+    font-size:clamp(19px, 2.2vw, 26px);
+    line-height:1;
+    color:var(--wine);
+  }
+  .logo .est{
+    display:block;
+    margin-top:6px;
+    font-family:var(--text);
+    font-size:10px;
+    font-weight:400;
+    letter-spacing:.24em;
+    text-transform:uppercase;
+    color:var(--muted);
+  }
+  .nav-links{
+    display:flex;
+    gap:clamp(14px, 2.4vw, 32px);
+    font-family:var(--text);
+    font-weight:400;
+    font-size:15px;
+    color:var(--ink-soft);
+  }
+  .nav-links.left{grid-column:1;justify-content:flex-start;}
+  .nav-links.right{grid-column:3;justify-content:flex-end;}
+  .nav-links a{
+    padding-bottom:2px;
+    border-bottom:1px solid transparent;
+    transition:border-color .18s ease, color .18s ease;
+  }
+  .nav-links a:hover{color:var(--ink);border-bottom-color:var(--gold);}
+
+  /* ---------- Hero — full-bleed cinematic media ---------- */
+  /* The <img> is a stand-in for real Nash footage. Swapping in a <video>
+     needs no CSS change: both are styled by .hero-media > * below. */
+  .hero{
+    position:relative;
+    height:100svh;
+    min-height:520px;
+    overflow:hidden;
+    background:var(--ink);
+    isolation:isolate;
+  }
+  .hero-media{position:absolute;inset:0;z-index:0;}
+  .hero-media > *{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+    display:block;
+  }
+  /* A scrim, not a flat tint: the top stays readable for the navbar and the
+     bottom carries the line. White on an unscrimmed photo is a coin toss. */
+  .hero-media::after{
+    content:'';
+    position:absolute;
+    inset:0;
+    background:linear-gradient(180deg,
+      rgba(18,15,13,.52) 0%,
+      rgba(18,15,13,.12) 26%,
+      rgba(18,15,13,.20) 55%,
+      rgba(18,15,13,.78) 100%);
+  }
+  .hero-inner{
+    position:relative;
+    z-index:1;
+    height:100%;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:flex-end;
+    text-align:center;
+    padding:0 var(--page-pad) clamp(46px, 9vh, 104px);
+  }
+  .hero-line{
+    font-family:var(--display);
+    font-weight:500;
+    font-size:clamp(38px, 8.6vw, 122px);
+    line-height:.98;
+    letter-spacing:-.02em;
+    color:var(--paper);
+    text-wrap:balance;
+  }
+  .hero-sub{
+    margin-top:clamp(12px, 2vh, 22px);
+    font-family:var(--text);
+    font-size:clamp(13px, 1.1vw, 15px);
+    letter-spacing:.18em;
+    text-transform:uppercase;
+    color:rgba(250,246,243,.72);
+  }
+  .hero-cue{
+    margin-top:clamp(26px, 4.5vh, 52px);
+    width:1px;
+    height:clamp(34px, 5vh, 56px);
+    background:linear-gradient(180deg, rgba(250,246,243,.7), rgba(250,246,243,0));
+  }
+
+  /* The slow push-in is what makes a still read as cinematic. Removed
+     outright under reduced motion — a continuously scaling full-screen
+     image is a vestibular trigger. */
+  @media (prefers-reduced-motion: no-preference){
+    .hero-media > *{
+      animation:heroPush 26s ease-out forwards;
+      transform-origin:52% 55%;
+    }
+  }
+  @keyframes heroPush{
+    from{transform:scale(1.001);}
+    to{transform:scale(1.09);}
+  }
+
+  /* Shared by the hero line and every rising heading */
+  .line-mask{display:block;overflow:hidden;padding-bottom:.1em;margin-bottom:-.1em;}
+  .line-in{display:block;}
+
+  /* ---------- Scroll reveals ---------- */
+  /* Three kinds, chosen per content type rather than one fade-up on
+     everything: headings rise out of a mask, photographs are uncovered
+     inside their frame, supporting text fades. Initial states are set in
+     JS, so nothing is hidden if the script never runs. */
+  .rv-mask{display:block;overflow:hidden;padding-bottom:.1em;margin-bottom:-.1em;}
+  .rv-in{display:block;}
+  /* The frame a photo is uncovered inside. Both story photos carry the
+     uncover reveal now, so both need to clip it. */
+  .story-shot, .story-inset{overflow:hidden;}
+
+  /* ---------- Story panel (deep green, overlapping photo) ---------- */
+  /* Redesigned now that the steam scene is gone and the hero hands over
+     directly to this section — its job got bigger, so the photography does
+     more work: two pinned photos instead of one, plus a facts strip. Both
+     photos use .pinned rather than a new treatment, per the rule that new
+     imagery reuses the site's one repeated gesture. */
+  .story{
+    background:var(--green);
+    color:rgba(250,246,243,.84);
+    padding:clamp(80px, 12vh, 148px) 0;
+  }
+  .story-grid{
+    display:grid;
+    grid-template-columns:1fr 1.08fr;
+    gap:clamp(40px, 6vw, 96px);
+    align-items:center;
+  }
+  .story h2{
+    color:var(--paper);
+    font-size:clamp(32px, 4.4vw, 62px);
+    line-height:1.04;
+    font-weight:500;
+  }
+  .story p{
+    margin-top:24px;
+    max-width:46ch;      /* serif body: keep the measure short */
+    font-size:16.5px;
+    line-height:1.75;
+  }
+
+  /* Three verified facts, not three invented ones — same claims already
+     made in the paragraph, restated as a scannable strip. */
+  .story-facts{
+    display:flex;
+    gap:clamp(20px, 3.4vw, 40px);
+    flex-wrap:wrap;
+    margin-top:30px;
+    padding-top:22px;
+    border-top:1px solid var(--rule-green);
+  }
+  .story-facts li{list-style:none;}
+  .story-facts b{
+    display:block;
+    font-family:var(--display);
+    font-weight:500;
+    font-size:19px;
+    color:var(--butter);
+  }
+  .story-facts span{
+    display:block;
+    margin-top:2px;
+    font-size:13.5px;
+    color:rgba(250,246,243,.62);
+  }
+
+  .story-link{
+    display:inline-block;
+    margin-top:30px;
+    font-family:var(--text);
+    font-size:16px;
+    color:var(--butter);
+    border-bottom:1px solid var(--rule-green);
+    padding-bottom:3px;
+    transition:border-color .2s ease;
+  }
+  .story-link:hover{border-bottom-color:var(--butter);}
+
+  /* The media column: a large documentary shot of the counter with a
+     smaller detail photo tucked over its corner — the same collage logic
+     as the hero, just two photos instead of four. */
+  .story-media{
+    position:relative;
+    max-width:520px;
+    margin:0 auto;
+  }
+  .story-shot{
+    transform:rotate(-2deg);
+  }
+  .story-shot img{width:100%;aspect-ratio:5/4;object-fit:cover;}
+
+  .story-inset{
+    position:absolute;
+    left:-9%;
+    bottom:-13%;
+    width:46%;
+    transform:rotate(4deg);
+    z-index:2;
+  }
+  .story-inset img{width:100%;aspect-ratio:1;object-fit:cover;}
+
+  /* Round letterpress-style stamp, biting the large photo's top-right corner
+     (moved off the top-left, which the inset photo now approaches) */
+  .stamp{
+    position:absolute;
+    right:-22px;
+    top:-24px;
+    width:clamp(84px, 10vw, 116px);
+    aspect-ratio:1;
+    display:grid;
+    place-items:center;
+    border-radius:50%;
+    background:var(--wine);
+    color:var(--paper);
+    transform:rotate(8deg);
+    z-index:2;
+  }
+  .stamp svg{width:100%;height:100%;}
+  .stamp text{
+    font-family:var(--text);
+    font-size:9px;
+    letter-spacing:.06em;
+    fill:currentColor;
+  }
+
+  .story-note{
+    position:absolute;
+    right:4%;
+    bottom:-15%;
+    z-index:2;
+    text-align:right;
+    transform:rotate(-4deg);
+  }
+
+  @media (max-width:880px){
+    .story-grid{grid-template-columns:1fr;gap:64px;}
+    .story-media{order:-1;max-width:420px;margin-bottom:22px;}
+    .story-inset{left:-6%;bottom:-11%;width:42%;}
+    .stamp{right:-14px;top:-18px;}
+    .story-note{right:0;bottom:-13%;}
+  }
+  @media (max-width:520px){
+    .story-media{max-width:300px;}
+    .story-note{position:static;text-align:left;transform:rotate(-3deg);margin-top:34px;}
+  }
+
+  /* ---------- Menu (the showpiece) ---------- */
+  /* Every item carries its own photograph. This is where people decide what
+     to buy, so it gets the largest images on the page. */
+  .menu{
+    background:var(--paper);
+    padding:clamp(72px, 11vh, 124px) 0;
+  }
+  .menu-head{
+    display:flex;
+    align-items:flex-end;
+    justify-content:space-between;
+    gap:24px;
+    flex-wrap:wrap;
+    padding-bottom:18px;
+    border-bottom:1px solid var(--rule);
+  }
+  .menu-head h2{
+    font-size:clamp(34px, 5.4vw, 74px);
+    font-weight:500;
+    line-height:1;
+  }
+  .menu-filter{
+    position:relative;
+    display:flex;
+    gap:clamp(14px, 2vw, 26px);
+    padding-bottom:8px;
+  }
+  .mf-btn{
+    font-family:var(--text);
+    font-size:15px;
+    color:var(--muted);
+    transition:color .2s ease;
+  }
+  .mf-btn.is-on{color:var(--ink);}
+  .mf-bar{
+    position:absolute;
+    left:0; bottom:0;
+    width:1px; height:2px;
+    background:var(--gold);
+    transform-origin:0 50%;
+    pointer-events:none;
+  }
+
+  .menu-board{
+    margin-top:clamp(34px, 5vh, 56px);
+    display:grid;
+    grid-template-columns:repeat(3, 1fr);
+    gap:clamp(22px, 3.2vw, 46px) clamp(18px, 2.4vw, 34px);
+  }
+  /* The first card of each run leads at double width — an editorial grid
+     rather than a uniform tile field. */
+  .mi.is-lead{grid-column:span 2;}
+  .menu-board[data-view="cakes"] .mi:not([data-cat="cakes"]),
+  .menu-board[data-view="small"] .mi:not([data-cat="small"]),
+  .menu-board[data-view="bread"] .mi:not([data-cat="bread"]){display:none;}
+
+  .mi{margin:0;}
+  .mi-shot{
+    position:relative;
+    overflow:hidden;              /* the frame the photo is uncovered inside */
+    background:var(--paper-2);
+  }
+  .mi-shot img{
+    width:100%;
+    height:100%;
+    aspect-ratio:4/5;
+    object-fit:cover;
+    transition:transform .5s cubic-bezier(.2,.6,.2,1);
+  }
+  .mi.is-lead .mi-shot img{aspect-ratio:16/11;}
+  .mi:hover .mi-shot img{transform:scale(1.035);}
+
+  .mi-name{
+    display:block;
+    margin-top:15px;
+    font-family:var(--display);
+    font-size:clamp(17px, 1.7vw, 22px);
+    font-weight:500;
+    color:var(--ink);
+    line-height:1.2;
+  }
+  .mi-name::after{
+    content:'';
+    display:block;
+    width:0;
+    height:1px;
+    margin-top:5px;
+    background:var(--gold);
+    transition:width .35s cubic-bezier(.2,.6,.2,1);
+  }
+  .mi:hover .mi-name::after{width:44px;}
+  .mi-tag{
+    margin-left:8px;
+    font-family:var(--text);
+    font-style:italic;
+    font-size:13.5px;
+    color:var(--wine);
+  }
+  .mi-desc{
+    margin-top:6px;
+    font-size:15px;
+    line-height:1.55;
+    color:var(--muted);
+    max-width:42ch;
+  }
+
+  /* No prices are published, so the menu says where to get them instead. */
+  .menu-foot{
+    margin-top:clamp(34px, 5vh, 56px);
+    padding-top:22px;
+    border-top:1px solid var(--rule);
+    display:flex;
+    gap:clamp(18px, 4vw, 60px);
+    flex-wrap:wrap;
+    font-size:15.5px;
+    line-height:1.7;
+    color:var(--muted);
+  }
+  .menu-foot p{max-width:46ch;}
+  .menu-foot a{color:var(--ink);border-bottom:1px solid var(--gold);}
+  .menu-foot b{
+    display:block;
+    font-family:var(--display);
+    font-weight:500;
+    font-size:19px;
+    color:var(--ink);
+    margin-bottom:4px;
+  }
+
+  @media (max-width:900px){
+    .menu-board{grid-template-columns:repeat(2, 1fr);}
+    .mi.is-lead{grid-column:span 2;}
+  }
+  @media (max-width:560px){
+    .menu-board{grid-template-columns:1fr;}
+    .mi.is-lead{grid-column:span 1;}
+    .mi.is-lead .mi-shot img{aspect-ratio:4/5;}
+  }
+
+  /* ---------- Visit ---------- */
+  .visit{
+    background:var(--green);
+    color:rgba(250,246,243,.84);
+    padding:clamp(72px, 11vh, 124px) 0;
+  }
+  .visit-grid{
+    display:grid;
+    grid-template-columns:1fr 1.1fr;
+    gap:clamp(36px, 6vw, 80px);
+    align-items:center;
+  }
+  .visit h2{
+    color:var(--paper);
+    font-size:clamp(30px, 4vw, 54px);
+    font-weight:500;
+  }
+  .visit-address{
+    font-style:normal;
+    margin-top:16px;
+    font-size:17px;
+  }
+  .visit-status{
+    display:flex;
+    align-items:center;
+    gap:9px;
+    margin-top:22px;
+    font-size:15px;
+    color:var(--butter);
+  }
+  .visit-status .dot{
+    width:8px;height:8px;border-radius:50%;
+    background:var(--butter);
+    flex:none;
+  }
+  .visit-status.is-closed{color:rgba(250,246,243,.6);}
+  .visit-status.is-closed .dot{background:var(--wine);}
+  .visit-hours{margin-top:5px;font-size:15px;color:rgba(250,246,243,.62);}
+  .visit-note{
+    margin-top:18px;
+    font-size:15.5px;
+    line-height:1.7;
+    max-width:36ch;
+    color:rgba(250,246,243,.68);
+  }
+  .visit-actions{
+    margin-top:30px;
+    display:flex;
+    gap:12px;
+    flex-wrap:wrap;
+  }
+  .visit-btn{
+    padding:14px 26px;
+    font-family:var(--text);
+    font-size:15px;
+    transition:background .18s ease, color .18s ease;
+  }
+  .visit-btn.solid{background:var(--butter);color:var(--green-deep);}
+  .visit-btn.solid:hover{background:var(--paper);}
+  .visit-btn.ghost{border:1px solid rgba(243,201,94,.45);color:var(--butter);}
+  .visit-btn.ghost:hover{background:rgba(243,201,94,.12);}
+  .visit-map{
+    background:#fff;
+    padding:8px;
+    transform:rotate(1deg);
+  }
+  .visit-map iframe{
+    width:100%;
+    height:100%;
+    min-height:380px;
+    border:0;
+    display:block;
+  }
+
+  /* ---------- Gallery (drifting strips) ---------- */
+  .gallery{
+    background:var(--paper-2);
+    padding:clamp(64px, 9vh, 104px) 0;
+    overflow:hidden;
+  }
+  .gallery-head{
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-end;
+    gap:24px;
+    flex-wrap:wrap;
+  }
+  .gallery-head h2{font-size:clamp(28px, 3.6vw, 46px);font-weight:500;}
+  .gallery-head p{margin-top:8px;font-size:16px;color:var(--muted);}
+  .ig-link{
+    display:inline-flex;
+    align-items:center;
+    gap:9px;
+    padding:12px 22px;
+    background:var(--green);
+    color:var(--paper);
+    font-family:var(--text);
+    font-size:15px;
+    transition:background .18s ease;
+  }
+  .ig-link:hover{background:var(--green-deep);}
+  .strip{
+    --gap:16px;
+    display:flex;
+    gap:var(--gap);
+    width:max-content;
+    margin-top:36px;
+    animation:drift 56s linear infinite;
+  }
+  .strip.rev{margin-top:var(--gap);animation-direction:reverse;}
+  .strip-set{display:flex;gap:var(--gap);}
+  .strip img, .strip .tile{
+    height:clamp(160px, 20vw, 240px);
+    width:auto;
+    aspect-ratio:var(--ar, 4/5);
+    object-fit:cover;
+    flex:none;
+  }
+  .strip .tile{
+    display:grid;
+    place-items:center;
+    background:var(--green);
+    aspect-ratio:1;
+  }
+  .strip .tile svg{width:30px;height:30px;}
+  @keyframes drift{to{transform:translateX(-25%);}}
+
+  /* ---------- FAQ ---------- */
+  .faq{
+    background:var(--paper);
+    padding:clamp(72px, 10vh, 116px) 0;
+  }
+  .faq-inner{
+    display:grid;
+    grid-template-columns:.85fr 1.15fr;
+    gap:clamp(32px, 5vw, 72px);
+    align-items:start;
+  }
+  .faq-intro h2{font-size:clamp(30px, 3.8vw, 50px);font-weight:500;}
+  .faq-intro p{
+    margin-top:14px;
+    font-size:16px;
+    line-height:1.7;
+    color:var(--muted);
+    max-width:32ch;
+  }
+  .faq-intro a{color:var(--ink);border-bottom:1px solid var(--gold);}
+  .faq-row{border-bottom:1px solid var(--rule);}
+  .faq-row:first-child{border-top:1px solid var(--rule);}
+  .faq-q{
+    width:100%;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:20px;
+    padding:20px 0;
+    text-align:left;
+    font-family:var(--display);
+    font-size:clamp(17px, 1.6vw, 21px);
+    font-weight:500;
+    color:var(--ink);
+  }
+  .faq-sign{position:relative;width:14px;height:14px;flex:none;}
+  .faq-sign::before, .faq-sign::after{content:'';position:absolute;background:var(--gold);}
+  .faq-sign::before{left:0;top:6.25px;width:14px;height:1.5px;}
+  .faq-sign::after{left:6.25px;top:0;width:1.5px;height:14px;transition:transform .25s ease;}
+  .faq-row.open .faq-sign::after{transform:scaleY(0);}
+  .faq-a{
+    display:grid;
+    grid-template-rows:0fr;
+    transition:grid-template-rows .3s ease;
+  }
+  .faq-row.open .faq-a{grid-template-rows:1fr;}
+  .faq-a-inner{overflow:hidden;}
+  .faq-a p{
+    padding-bottom:20px;
+    font-size:16px;
+    line-height:1.7;
+    color:var(--muted);
+    max-width:54ch;
+  }
+  .faq-a b{color:var(--ink);font-weight:600;}
+
+  /* ---------- CTA banner ---------- */
+  .cta-banner{
+    background:var(--paper);
+    padding:0 0 clamp(72px, 10vh, 116px);
+  }
+  .cta-banner-inner{
+    background:var(--wine);
+    color:rgba(250,246,243,.82);
+    padding:clamp(44px, 6vw, 76px) clamp(30px, 5vw, 68px);
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:30px;
+    flex-wrap:wrap;
+  }
+  .cta-banner h2{
+    color:var(--paper);
+    font-size:clamp(27px, 3.4vw, 44px);
+    font-weight:500;
+    max-width:20ch;
+  }
+  .cta-banner p{margin-top:10px;font-size:16px;}
+  .cta-btn{
+    padding:15px 30px;
+    background:var(--paper);
+    color:var(--wine);
+    font-family:var(--text);
+    font-size:15px;
+    transition:background .18s ease;
+  }
+  .cta-btn:hover{background:var(--butter);}
+
+  /* ---------- Footer ---------- */
+  footer{
+    background:var(--green-deep);
+    color:rgba(250,246,243,.7);
+    padding:clamp(56px, 8vh, 92px) 0 26px;
+  }
+  .footer-top{
+    display:grid;
+    grid-template-columns:1.7fr 1fr 1fr 1.2fr;
+    gap:clamp(28px, 4vw, 56px);
+  }
+  .footer-brand .logo{color:var(--butter);text-align:left;}
+  .footer-brand .logo .est{color:rgba(250,246,243,.45);}
+  .footer-brand p{
+    margin-top:16px;
+    font-size:15.5px;
+    line-height:1.7;
+    max-width:34ch;
+  }
+  .footer-social{margin-top:22px;display:flex;gap:10px;}
+  .footer-social a{
+    width:38px;height:38px;
+    display:grid;place-items:center;
+    border:1px solid rgba(250,246,243,.2);
+    transition:border-color .2s ease, background .2s ease;
+  }
+  .footer-social a:hover{border-color:var(--butter);background:rgba(243,201,94,.1);}
+  .footer-col h5{
+    font-family:var(--display);
+    font-style:italic;
+    font-size:17px;
+    font-weight:500;
+    color:var(--butter);
+  }
+  .footer-col ul{margin-top:14px;display:grid;gap:9px;font-size:15.5px;}
+  .footer-col a{border-bottom:1px solid transparent;transition:border-color .2s ease;}
+  .footer-col a:hover{border-bottom-color:rgba(243,201,94,.55);}
+  .footer-hours{margin-top:16px;font-size:14.5px;color:rgba(250,246,243,.45);}
+  .footer-bottom{
+    margin-top:clamp(40px, 6vh, 68px);
+    padding-top:20px;
+    border-top:1px solid rgba(250,246,243,.13);
+    display:flex;
+    justify-content:space-between;
+    gap:12px;
+    flex-wrap:wrap;
+    font-size:14px;
+    color:rgba(250,246,243,.45);
+  }
+
+  /* Lenis smooth scroll harness */
+  html.lenis, html.lenis body{height:auto;}
+  .lenis.lenis-smooth{scroll-behavior:auto !important;}
+  .lenis.lenis-stopped{overflow:hidden;}
+
+  /* ---------- Reduced motion ---------- */
+  /* Tier 1 — remove outright: the drifting strips are a continuous marquee. */
+  @media (prefers-reduced-motion: reduce){
+    .strip{animation:none;}
+    .gallery{overflow-x:auto;}
+    html{scroll-behavior:auto;}
+  }
+
+  /* ---------- Responsive ---------- */
+  @media (max-width: 980px){
+    .feat-row{grid-template-columns:repeat(3, 1fr);}
+    .feat-card:nth-child(n+4){display:none;}
+    .menu-board{grid-template-columns:1fr 1fr;}
+    .visit-grid{grid-template-columns:1fr;gap:40px;}
+    .faq-inner{grid-template-columns:1fr;gap:30px;}
+    .footer-top{grid-template-columns:1fr 1fr;}
+  }
+
+  @media (max-width: 640px){
+    :root{--page-pad:6vw;}
+    .nav-links{display:none;}
+    .navbar{grid-template-columns:1fr;justify-items:center;}
+    .logo{grid-column:1;}
+    .menu-head{flex-direction:column;align-items:flex-start;gap:18px;}
+    .menu-filter{flex-wrap:wrap;}
+    .menu-board{grid-template-columns:1fr;}
+    .menu-board:not([data-view="all"]) .menu-group ul{columns:1;}
+    .featured{margin-left:calc(var(--page-pad) * -1);margin-right:calc(var(--page-pad) * -1);}
+    .feat-row{
+      display:flex;
+      gap:14px;
+      overflow-x:auto;
+      scroll-snap-type:x mandatory;
+      padding:0 var(--page-pad) 4px;
+      scrollbar-width:none;
+    }
+    .feat-row::-webkit-scrollbar{display:none;}
+    .feat-card{flex:0 0 62vw;scroll-snap-align:start;}
+    .feat-card:nth-child(n+4){display:block;}
+    .cta-banner-inner{flex-direction:column;align-items:flex-start;}
+    .cta-btn{width:100%;text-align:center;justify-content:center;}
+    .footer-top{grid-template-columns:1fr;gap:34px;}
+    .footer-bottom{flex-direction:column;gap:8px;}
+  }
+</style>
+</head>
+<body>
+
+<div class="page-frame">
+
+  <!-- NAVBAR -->
+  <div class="navbar-wrap">
+    <nav class="navbar">
+      <ul class="nav-links left">
+        <li><a href="#menu">Menu</a></li>
+        <li><a href="#story">Our baking</a></li>
+      </ul>
+      <a href="#" class="logo">Nash Bakery<span class="est">Damascus · est. 2018</span></a>
+      <ul class="nav-links right">
+        <li><a href="#visit">Visit</a></li>
+        <li><a href="#faq">Good to know</a></li>
+      </ul>
+    </nav>
+  </div>
+
+  <!-- HERO -->
+  <!-- Placeholder: swap the <img> for real Nash footage as
+       <video autoplay muted loop playsinline poster="…"> — no CSS change needed -->
+  <section class="hero">
+    <div class="hero-media">
+      <img src="https://images.unsplash.com/photo-1555507036-ab1f4038808a?q=85&w=2000&auto=format&fit=crop"
+           alt="Croissants on a dark counter under a fall of flour"
+           fetchpriority="high" decoding="async">
+    </div>
+    <div class="container hero-inner">
+      <h1 class="hero-line">Baked with love</h1>
+      <p class="hero-sub">Damascus · every day, 10:00–00:00</p>
+      <span class="hero-cue" aria-hidden="true"></span>
+    </div>
+  </section>
+
+  <!-- STORY (deep green panel) -->
+  <section class="story on-green" id="story">
+    <div class="container story-grid">
+      <div class="story-copy">
+        <h2 data-rv="rise">Everything here<br>was made this<br>morning.</h2>
+        <p data-rv="fade">Nash has been baking in Damascus since 2018. Cakes, cookies, cinnamon rolls, bread — all of it mixed, proved and baked on the premises, the same day you buy it. Nothing is held over to the next morning, which is the whole reason we sell out.</p>
+        <ul class="story-facts" data-rv="fade">
+          <li><b>2018</b><span>Est.</span></li>
+          <li><b>Every morning</b><span>Baked fresh</span></li>
+          <li><b>Damascus</b><span>Where we are</span></li>
+        </ul>
+        <a class="story-link" data-rv="fade" href="#menu">See what we bake</a>
+      </div>
+
+      <div class="story-media">
+        <figure class="pinned story-shot" data-rv="uncover">
+          <img src="https://images.unsplash.com/photo-1587241321921-91a834d6d191?q=80&w=900&auto=format&fit=crop"
+               alt="The Nash counter, trays of bread and pastry lined up under the lights" loading="lazy">
+        </figure>
+        <figure class="pinned story-inset" data-rv="uncover">
+          <img src="https://images.unsplash.com/photo-1517686469429-8bdb88b9f907?q=80&w=500&auto=format&fit=crop"
+               alt="Hands kneading dough on a floured board" loading="lazy">
+        </figure>
+        <span class="stamp" aria-hidden="true">
+          <svg viewBox="0 0 100 100"><defs><path id="stampArc" d="M50,50 m-33,0 a33,33 0 1,1 66,0 a33,33 0 1,1 -66,0"/></defs>
+            <text><textPath href="#stampArc" startOffset="2%">BAKED FRESH DAILY · SINCE 2018 · </textPath></text>
+          </svg>
+        </span>
+        <p class="note story-note" data-rv="fade">Nothing sits<br>overnight</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- MENU -->
+  <!-- Placeholder photography: swap every shot for real Nash photos -->
+  <section class="menu" id="menu">
+    <div class="container">
+      <div class="menu-head">
+        <h2 data-rv="rise">What we bake</h2>
+        <div class="menu-filter" role="tablist" aria-label="Filter the menu">
+          <button class="mf-btn is-on" role="tab" aria-selected="true" data-show="all">Everything</button>
+          <button class="mf-btn" role="tab" aria-selected="false" data-show="cakes">Cakes</button>
+          <button class="mf-btn" role="tab" aria-selected="false" data-show="small">Cookies &amp; rolls</button>
+          <button class="mf-btn" role="tab" aria-selected="false" data-show="bread">Bread</button>
+          <span class="mf-bar" aria-hidden="true"></span>
+        </div>
+      </div>
+
+      <div class="menu-board" data-view="all">
+        <article class="mi is-lead" data-cat="cakes">
+          <div class="mi-shot" data-rv="uncover">
+            <img src="https://images.unsplash.com/photo-1578985545062-69928b1d9587?q=80&w=1100&auto=format&fit=crop" alt="Chocolate layer cake" loading="lazy">
+          </div>
+          <span class="mi-name">Chocolate layer cake</span>
+          <p class="mi-desc">Dark sponge, chocolate cream, ganache poured over the top.</p>
+        </article>
+        <article class="mi" data-cat="cakes">
+          <div class="mi-shot" data-rv="uncover">
+            <img src="https://images.unsplash.com/photo-1535141192574-5d4897c12636?q=80&w=760&auto=format&fit=crop" alt="Berry cream cake" loading="lazy">
+          </div>
+          <span class="mi-name">Berry cream cake</span>
+          <p class="mi-desc">Vanilla sponge, whipped cream, whatever fruit is good that week.</p>
+        </article>
+        <article class="mi" data-cat="cakes">
+          <div class="mi-shot" data-rv="uncover">
+            <img src="https://images.unsplash.com/photo-1571115177098-24ec42ed204d?q=80&w=760&auto=format&fit=crop" alt="Pistachio cake" loading="lazy">
+          </div>
+          <span class="mi-name">Pistachio cake <em class="mi-tag">house favourite</em></span>
+          <p class="mi-desc">Ground pistachio in the crumb, rosewater in the cream.</p>
+        </article>
+        <article class="mi" data-cat="cakes">
+          <div class="mi-shot" data-rv="uncover">
+            <img src="https://images.unsplash.com/photo-1519915028121-7d3463d20b13?q=80&w=760&auto=format&fit=crop" alt="Lemon meringue tart" loading="lazy">
+          </div>
+          <span class="mi-name">Lemon meringue tart</span>
+          <p class="mi-desc">Sharp lemon curd under torched meringue.</p>
+        </article>
+        <article class="mi" data-cat="cakes">
+          <div class="mi-shot" data-rv="uncover">
+            <img src="https://images.unsplash.com/photo-1533134242443-d4fd215305ad?q=80&w=760&auto=format&fit=crop" alt="Cheesecake slice" loading="lazy">
+          </div>
+          <span class="mi-name">Cheesecake slice</span>
+          <p class="mi-desc">Baked, not set. Plain or with berries.</p>
+        </article>
+        <article class="mi" data-cat="cakes">
+          <div class="mi-shot" data-rv="uncover">
+            <img src="https://images.unsplash.com/photo-1550617931-e17a7b70dce2?q=80&w=760&auto=format&fit=crop" alt="Chocolate cupcakes" loading="lazy">
+          </div>
+          <span class="mi-name">Chocolate cupcakes</span>
+          <p class="mi-desc">Small, dark, and iced by hand every morning.</p>
+        </article>
+        <article class="mi is-lead" data-cat="small">
+          <div class="mi-shot" data-rv="uncover">
+            <img src="https://images.unsplash.com/photo-1509365465985-25d11c17e812?q=80&w=1100&auto=format&fit=crop" alt="Cinnamon rolls" loading="lazy">
+          </div>
+          <span class="mi-name">Cinnamon rolls</span>
+          <p class="mi-desc">Out of the oven first thing and iced while still warm. They rarely last the morning.</p>
+        </article>
+        <article class="mi" data-cat="small">
+          <div class="mi-shot" data-rv="uncover">
+            <img src="https://images.unsplash.com/photo-1499636136210-6f4ee915583e?q=80&w=760&auto=format&fit=crop" alt="Chocolate chunk cookies" loading="lazy">
+          </div>
+          <span class="mi-name">Chocolate chunk cookies</span>
+          <p class="mi-desc">Soft in the middle, baked in small batches all day.</p>
+        </article>
+        <article class="mi" data-cat="small">
+          <div class="mi-shot" data-rv="uncover">
+            <img src="https://images.unsplash.com/photo-1590080874088-eec64895b423?q=80&w=760&auto=format&fit=crop" alt="Pistachio cookies" loading="lazy">
+          </div>
+          <span class="mi-name">Pistachio cookies</span>
+          <p class="mi-desc">Short and crumbly, rolled in chopped pistachio.</p>
+        </article>
+        <article class="mi" data-cat="small">
+          <div class="mi-shot" data-rv="uncover">
+            <img src="https://images.unsplash.com/photo-1555507036-ab1f4038808a?q=80&w=760&auto=format&fit=crop" alt="Almond croissant" loading="lazy">
+          </div>
+          <span class="mi-name">Almond croissant</span>
+          <p class="mi-desc">Filled with almond cream and baked a second time.</p>
+        </article>
+        <article class="mi" data-cat="small">
+          <div class="mi-shot" data-rv="uncover">
+            <img src="https://images.unsplash.com/photo-1558961363-fa8fdf82db35?q=80&w=760&auto=format&fit=crop" alt="Date maamoul" loading="lazy">
+          </div>
+          <span class="mi-name">Date maamoul <em class="mi-tag">seasonal</em></span>
+          <p class="mi-desc">Semolina shortbread pressed around date paste.</p>
+        </article>
+        <article class="mi is-lead" data-cat="bread">
+          <div class="mi-shot" data-rv="uncover">
+            <img src="https://images.unsplash.com/photo-1549931319-a545dcf3bc73?q=80&w=1100&auto=format&fit=crop" alt="Country loaf" loading="lazy">
+          </div>
+          <span class="mi-name">Country loaf</span>
+          <p class="mi-desc">Proved overnight, baked dark. Good for three days, better on the first.</p>
+        </article>
+        <article class="mi" data-cat="bread">
+          <div class="mi-shot" data-rv="uncover">
+            <img src="https://images.unsplash.com/photo-1509440159596-0249088772ff?q=80&w=760&auto=format&fit=crop" alt="Seeded loaf" loading="lazy">
+          </div>
+          <span class="mi-name">Seeded loaf</span>
+          <p class="mi-desc">Sesame, flax and sunflower through the dough and across the crust.</p>
+        </article>
+        <article class="mi" data-cat="bread">
+          <div class="mi-shot" data-rv="uncover">
+            <img src="https://images.unsplash.com/photo-1608198093002-ad4e005484ec?q=80&w=760&auto=format&fit=crop" alt="Baguette" loading="lazy">
+          </div>
+          <span class="mi-name">Baguette</span>
+          <p class="mi-desc">Baked twice a day. Ask which batch is newest.</p>
+        </article>
+        <article class="mi" data-cat="bread">
+          <div class="mi-shot" data-rv="uncover">
+            <img src="https://images.unsplash.com/photo-1568254183919-78a4f43a2877?q=80&w=760&auto=format&fit=crop" alt="Soft milk buns" loading="lazy">
+          </div>
+          <span class="mi-name">Soft milk buns</span>
+          <p class="mi-desc">For sandwiches, or for eating on the walk home.</p>
+        </article>
+      </div>
+
+      <div class="menu-foot">
+        <p><b>Prices are on the board</b>They move with what ingredients cost, so we
+          would rather tell you at the counter than post a number that goes stale.</p>
+        <p><b>Whole cakes to order</b>Anything on the cake list, made to size.
+          Call <a href="tel:+963987514666">0987 514 666</a> a day ahead.</p>
+        <p><b>Delivery</b>We are on <a href="https://beeorder.com/" target="_blank" rel="noopener">BeeOrder</a>
+          and <a href="https://movo.sy/" target="_blank" rel="noopener">Movo</a>.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- VISIT -->
+  <section class="visit on-green" id="visit">
+    <div class="container visit-grid">
+      <div class="visit-info">
+        <h2 data-rv="rise">Come and find us</h2>
+        <address class="visit-address">Damascus, Syria</address>
+        <p class="visit-status" aria-live="polite"><span class="dot"></span><span class="visit-status-text">Open daily</span></p>
+        <p class="visit-hours">Every day, 10:00–00:00</p>
+        <p class="visit-note">We have never published a street address — the map pin is exact, and
+          the smell of the ovens does the rest.</p>
+        <div class="visit-actions">
+          <a class="visit-btn solid" href="https://www.google.com/maps/dir/?api=1&amp;destination=33.515793,36.283978" target="_blank" rel="noopener">Get directions</a>
+          <a class="visit-btn ghost" href="tel:+963987514666">Call 0987 514 666</a>
+        </div>
+      </div>
+      <div class="visit-map pinned">
+        <iframe title="Map showing Nash Bakery in Damascus" src="https://maps.google.com/maps?q=33.515793,36.283978&amp;z=15&amp;output=embed" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+      </div>
+    </div>
+  </section>
+
+  <!-- GALLERY -->
+  <!-- Placeholder photography: swap the stock shots for real Nash photos -->
+  <section class="gallery" id="gallery">
+    <div class="container">
+      <div class="gallery-head">
+        <div>
+          <h2 data-rv="rise">Seen at Nash</h2>
+          <p>Tag us and your photo could end up here.</p>
+        </div>
+        <a class="ig-link" href="https://www.instagram.com/nashbakery__/" target="_blank" rel="noopener">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="2" y="2" width="20" height="20" rx="6" stroke="currentColor" stroke-width="1.8"/><circle cx="12" cy="12" r="4.5" stroke="currentColor" stroke-width="1.8"/><circle cx="17.5" cy="6.5" r="1.2" fill="currentColor"/></svg>
+          @nashbakery__
+        </a>
+      </div>
+    </div>
+
+    <div class="strip" aria-hidden="true">
+      <div class="strip-set"><img src="https://images.unsplash.com/photo-1535141192574-5d4897c12636?q=75&w=520&auto=format&fit=crop" style="--ar:4 / 5" alt=""><img src="https://images.unsplash.com/photo-1549931319-a545dcf3bc73?q=75&w=520&auto=format&fit=crop" style="--ar:3 / 2" alt=""><div class="tile"><svg viewBox="0 0 24 24" fill="none"><rect x="2" y="2" width="20" height="20" rx="6" stroke="#F3C95E" stroke-width="1.8"/><circle cx="12" cy="12" r="4.5" stroke="#F3C95E" stroke-width="1.8"/><circle cx="17.5" cy="6.5" r="1.2" fill="#F3C95E"/></svg></div><img src="https://images.unsplash.com/photo-1519915028121-7d3463d20b13?q=75&w=520&auto=format&fit=crop" style="--ar:1 / 1" alt=""><img src="https://images.unsplash.com/photo-1571115177098-24ec42ed204d?q=75&w=520&auto=format&fit=crop" style="--ar:4 / 5" alt=""></div>
+      <div class="strip-set"><img src="https://images.unsplash.com/photo-1535141192574-5d4897c12636?q=75&w=520&auto=format&fit=crop" style="--ar:4 / 5" alt=""><img src="https://images.unsplash.com/photo-1549931319-a545dcf3bc73?q=75&w=520&auto=format&fit=crop" style="--ar:3 / 2" alt=""><div class="tile"><svg viewBox="0 0 24 24" fill="none"><rect x="2" y="2" width="20" height="20" rx="6" stroke="#F3C95E" stroke-width="1.8"/><circle cx="12" cy="12" r="4.5" stroke="#F3C95E" stroke-width="1.8"/><circle cx="17.5" cy="6.5" r="1.2" fill="#F3C95E"/></svg></div><img src="https://images.unsplash.com/photo-1519915028121-7d3463d20b13?q=75&w=520&auto=format&fit=crop" style="--ar:1 / 1" alt=""><img src="https://images.unsplash.com/photo-1571115177098-24ec42ed204d?q=75&w=520&auto=format&fit=crop" style="--ar:4 / 5" alt=""></div>
+      <div class="strip-set"><img src="https://images.unsplash.com/photo-1535141192574-5d4897c12636?q=75&w=520&auto=format&fit=crop" style="--ar:4 / 5" alt=""><img src="https://images.unsplash.com/photo-1549931319-a545dcf3bc73?q=75&w=520&auto=format&fit=crop" style="--ar:3 / 2" alt=""><div class="tile"><svg viewBox="0 0 24 24" fill="none"><rect x="2" y="2" width="20" height="20" rx="6" stroke="#F3C95E" stroke-width="1.8"/><circle cx="12" cy="12" r="4.5" stroke="#F3C95E" stroke-width="1.8"/><circle cx="17.5" cy="6.5" r="1.2" fill="#F3C95E"/></svg></div><img src="https://images.unsplash.com/photo-1519915028121-7d3463d20b13?q=75&w=520&auto=format&fit=crop" style="--ar:1 / 1" alt=""><img src="https://images.unsplash.com/photo-1571115177098-24ec42ed204d?q=75&w=520&auto=format&fit=crop" style="--ar:4 / 5" alt=""></div>
+      <div class="strip-set"><img src="https://images.unsplash.com/photo-1535141192574-5d4897c12636?q=75&w=520&auto=format&fit=crop" style="--ar:4 / 5" alt=""><img src="https://images.unsplash.com/photo-1549931319-a545dcf3bc73?q=75&w=520&auto=format&fit=crop" style="--ar:3 / 2" alt=""><div class="tile"><svg viewBox="0 0 24 24" fill="none"><rect x="2" y="2" width="20" height="20" rx="6" stroke="#F3C95E" stroke-width="1.8"/><circle cx="12" cy="12" r="4.5" stroke="#F3C95E" stroke-width="1.8"/><circle cx="17.5" cy="6.5" r="1.2" fill="#F3C95E"/></svg></div><img src="https://images.unsplash.com/photo-1519915028121-7d3463d20b13?q=75&w=520&auto=format&fit=crop" style="--ar:1 / 1" alt=""><img src="https://images.unsplash.com/photo-1571115177098-24ec42ed204d?q=75&w=520&auto=format&fit=crop" style="--ar:4 / 5" alt=""></div>
+    </div>
+
+    <div class="strip rev" aria-hidden="true">
+      <div class="strip-set"><img src="https://images.unsplash.com/photo-1608198093002-ad4e005484ec?q=75&w=520&auto=format&fit=crop" style="--ar:4 / 5" alt=""><img src="https://images.unsplash.com/photo-1587241321921-91a834d6d191?q=75&w=520&auto=format&fit=crop" style="--ar:3 / 2" alt=""><img src="https://images.unsplash.com/photo-1550617931-e17a7b70dce2?q=75&w=520&auto=format&fit=crop" style="--ar:4 / 5" alt=""><img src="https://images.unsplash.com/photo-1558961363-fa8fdf82db35?q=75&w=520&auto=format&fit=crop" style="--ar:1 / 1" alt=""></div>
+      <div class="strip-set"><img src="https://images.unsplash.com/photo-1608198093002-ad4e005484ec?q=75&w=520&auto=format&fit=crop" style="--ar:4 / 5" alt=""><img src="https://images.unsplash.com/photo-1587241321921-91a834d6d191?q=75&w=520&auto=format&fit=crop" style="--ar:3 / 2" alt=""><img src="https://images.unsplash.com/photo-1550617931-e17a7b70dce2?q=75&w=520&auto=format&fit=crop" style="--ar:4 / 5" alt=""><img src="https://images.unsplash.com/photo-1558961363-fa8fdf82db35?q=75&w=520&auto=format&fit=crop" style="--ar:1 / 1" alt=""></div>
+      <div class="strip-set"><img src="https://images.unsplash.com/photo-1608198093002-ad4e005484ec?q=75&w=520&auto=format&fit=crop" style="--ar:4 / 5" alt=""><img src="https://images.unsplash.com/photo-1587241321921-91a834d6d191?q=75&w=520&auto=format&fit=crop" style="--ar:3 / 2" alt=""><img src="https://images.unsplash.com/photo-1550617931-e17a7b70dce2?q=75&w=520&auto=format&fit=crop" style="--ar:4 / 5" alt=""><img src="https://images.unsplash.com/photo-1558961363-fa8fdf82db35?q=75&w=520&auto=format&fit=crop" style="--ar:1 / 1" alt=""></div>
+      <div class="strip-set"><img src="https://images.unsplash.com/photo-1608198093002-ad4e005484ec?q=75&w=520&auto=format&fit=crop" style="--ar:4 / 5" alt=""><img src="https://images.unsplash.com/photo-1587241321921-91a834d6d191?q=75&w=520&auto=format&fit=crop" style="--ar:3 / 2" alt=""><img src="https://images.unsplash.com/photo-1550617931-e17a7b70dce2?q=75&w=520&auto=format&fit=crop" style="--ar:4 / 5" alt=""><img src="https://images.unsplash.com/photo-1558961363-fa8fdf82db35?q=75&w=520&auto=format&fit=crop" style="--ar:1 / 1" alt=""></div>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section class="faq" id="faq">
+    <div class="container faq-inner">
+      <div class="faq-intro">
+        <h2 data-rv="rise">Good to know</h2>
+        <p>Anything else, call us on <a href="tel:+963987514666">0987 514 666</a> or ask at the counter.</p>
+      </div>
+      <div class="faq-list">
+        <div class="faq-row open">
+          <button class="faq-q">When are you open?<span class="faq-sign" aria-hidden="true"></span></button>
+          <div class="faq-a"><div class="faq-a-inner"><p>Every day from <b>10:00 to 00:00</b>.</p></div></div>
+        </div>
+        <div class="faq-row">
+          <button class="faq-q">Do you deliver?<span class="faq-sign" aria-hidden="true"></span></button>
+          <div class="faq-a"><div class="faq-a-inner"><p>Yes, through BeeOrder and Movo. Both carry the full counter, though the bread goes fastest.</p></div></div>
+        </div>
+        <div class="faq-row">
+          <button class="faq-q">Can I order a whole cake?<span class="faq-sign" aria-hidden="true"></span></button>
+          <div class="faq-a"><div class="faq-a-inner"><p>Yes. Call at least a day ahead and tell us the size — anything on the cake list can be made whole.</p></div></div>
+        </div>
+        <div class="faq-row">
+          <button class="faq-q">What time is the bread out?<span class="faq-sign" aria-hidden="true"></span></button>
+          <div class="faq-a"><div class="faq-a-inner"><p>The first bake lands when we open at 10:00 and there is a second batch in the afternoon. Cinnamon rolls are a morning thing and rarely survive past noon.</p></div></div>
+        </div>
+        <div class="faq-row">
+          <button class="faq-q">Where exactly are you?<span class="faq-sign" aria-hidden="true"></span></button>
+          <div class="faq-a"><div class="faq-a-inner"><p>In Damascus. We have never published a street address, so tap “Get directions” above and the map pin will take you to the door.</p></div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA BANNER -->
+  <section class="cta-banner">
+    <div class="container">
+      <div class="cta-banner-inner">
+        <div>
+          <h2 data-rv="rise">There is something fresh waiting for you.</h2>
+          <p>Damascus. Open every day, 10:00–00:00.</p>
+        </div>
+        <a href="#visit" class="cta-btn">Get directions</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="container">
+      <div class="footer-top">
+        <div class="footer-brand">
+          <a href="#" class="logo">Nash Bakery<span class="est">Damascus · est. 2018</span></a>
+          <p>A bakery in Damascus since 2018. Everything is mixed, proved and baked here, the same day you buy it.</p>
+          <div class="footer-social">
+            <a href="https://www.instagram.com/nashbakery__/" target="_blank" rel="noopener" aria-label="Instagram"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="2" y="2" width="20" height="20" rx="6" stroke="#fff" stroke-width="1.8"/><circle cx="12" cy="12" r="4.5" stroke="#fff" stroke-width="1.8"/><circle cx="17.5" cy="6.5" r="1.2" fill="#fff"/></svg></a>
+            <a href="https://wa.me/963987514666" target="_blank" rel="noopener" aria-label="WhatsApp"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M3.8 20.2l1.2-4A8 8 0 1 1 8 19l-4.2 1.2Z" stroke="#fff" stroke-width="1.7" stroke-linejoin="round"/><path d="M9 9.5c.3 2 1.8 3.7 3.8 4.3l.9-1.2 2 .8-.3 1.4c-2.9.5-6.4-2.4-6.9-5.3l1.4-.4.8 1.9-1 .9" stroke="#fff" stroke-width="1.2" stroke-linejoin="round"/></svg></a>
+          </div>
+        </div>
+        <div class="footer-col">
+          <h5>Menu</h5>
+          <ul>
+            <li><a href="#menu">Cakes</a></li>
+            <li><a href="#menu">Cookies &amp; rolls</a></li>
+            <li><a href="#menu">Bread</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h5>Info</h5>
+          <ul>
+            <li><a href="#story">Our baking</a></li>
+            <li><a href="#visit">Visit us</a></li>
+            <li><a href="#faq">Good to know</a></li>
+            <li><a href="#gallery">Seen at Nash</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h5>Contact</h5>
+          <ul>
+            <li><a href="tel:+963987514666">0987 514 666</a></li>
+            <li><a href="#visit">Damascus, Syria</a></li>
+          </ul>
+          <p class="footer-hours">Open every day, 10:00–00:00</p>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <span>© 2026 Nash Bakery</span>
+        <span>Damascus, Syria</span>
+      </div>
+    </div>
+  </footer>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/gsap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/ScrollTrigger.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/lenis@1.3.4/dist/lenis.min.js"></script>
+<script>
+  const navWrap = document.querySelector('.navbar-wrap');
+  const setNavState = () => navWrap.classList.toggle('scrolled', window.scrollY > 40);
+  setNavState();
+  window.addEventListener('scroll', setNavState, {passive:true});
+
+  document.querySelectorAll('.faq-row').forEach(row => {
+    row.querySelector('.faq-q').addEventListener('click', () => {
+      const isOpen = row.classList.contains('open');
+      document.querySelectorAll('.faq-row.open').forEach(r => r.classList.remove('open'));
+      if(!isOpen) row.classList.add('open');
+    });
+  });
+
+
+  // ---------- Hero: the load sequence ----------
+  (() => {
+    if(!window.gsap) return;
+    gsap.registerPlugin(ScrollTrigger);
+
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    // Smooth-scroll hijacking is a vestibular trigger, so it is removed
+    // outright under reduced motion rather than shortened.
+    if(!reduce && window.Lenis){
+      const lenis = new Lenis({duration:1.1, smoothWheel:true, anchors:true});
+      lenis.on('scroll', ScrollTrigger.update);
+      gsap.ticker.add(t => lenis.raf(t * 1000));
+      gsap.ticker.lagSmoothing(0);
+    }
+
+    const line = document.querySelector('.hero-line');
+    if(!line) return;
+
+    // The line rises out of a mask, so it appears to be revealed by the
+    // footage rather than dropped on top of it.
+    line.innerHTML = '<span class="line-mask"><span class="line-in">'
+                   + line.innerHTML + '</span></span>';
+    const inner = line.querySelector('.line-in');
+
+    if(reduce){
+      gsap.from([inner, '.hero-sub', '.hero-cue'],
+        {autoAlpha:0, duration:.25, stagger:.04, ease:'none'});
+      return;
+    }
+
+    gsap.timeline({defaults:{ease:'power3.out'}, delay:.25})
+      .from(inner, {yPercent:112, duration:1.1}, 0)
+      .from('.hero-sub', {autoAlpha:0, y:12, duration:.7}, '-=.65')
+      .from('.hero-cue', {autoAlpha:0, scaleY:0, transformOrigin:'50% 0%',
+                          duration:.7}, '-=.45');
+  })();
+
+  // ---------- Scroll reveals ----------
+  // Batched so a screenful of cards animates as one group rather than as
+  // twenty independent ScrollTriggers.
+  (() => {
+    if(!window.gsap) return;
+    gsap.registerPlugin(ScrollTrigger);
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    // Headings get a mask wrapper so they can rise out of nothing
+    gsap.utils.toArray('[data-rv="rise"]').forEach(el => {
+      el.innerHTML = '<span class="rv-mask"><span class="rv-in">' + el.innerHTML + '</span></span>';
+    });
+    const risers  = gsap.utils.toArray('[data-rv="rise"] .rv-in');
+    const faders  = gsap.utils.toArray('[data-rv="fade"]');
+    const frames  = gsap.utils.toArray('[data-rv="uncover"]');
+    const shots   = frames.map(f => f.querySelector('img')).filter(Boolean);
+
+    if(reduce){
+      // Tier 2: the entrance survives, the displacement does not.
+      ScrollTrigger.batch([...risers, ...faders, ...frames], {
+        start:'top 94%', once:true,
+        onEnter: b => gsap.from(b, {autoAlpha:0, duration:.2, stagger:.03, ease:'none'})
+      });
+      return;
+    }
+
+    gsap.set(risers, {yPercent:110});
+    gsap.set(faders, {autoAlpha:0, y:14});
+    gsap.set(frames, {autoAlpha:0});
+    gsap.set(shots,  {yPercent:12, scale:1.06});
+
+    ScrollTrigger.batch(risers, {
+      start:'top 90%', once:true,
+      onEnter: b => gsap.to(b, {yPercent:0, duration:.85, ease:'power3.out', stagger:.09})
+    });
+    ScrollTrigger.batch(faders, {
+      start:'top 92%', once:true,
+      onEnter: b => gsap.to(b, {autoAlpha:1, y:0, duration:.6, ease:'power2.out', stagger:.07})
+    });
+    // A photograph is uncovered inside its frame: the frame stays put and the
+    // image slides up behind it, which reads as reveal rather than as arrival.
+    ScrollTrigger.batch(frames, {
+      start:'top 88%', once:true,
+      onEnter: b => b.forEach((f, i) => {
+        const img = f.querySelector('img');
+        gsap.set(f, {autoAlpha:1, delay:i * .08});
+        if(img) gsap.to(img, {yPercent:0, scale:1, duration:1, ease:'power3.out', delay:i * .08});
+      })
+    });
+  })();
+
+  // ---------- Menu board: filter + hover photo ----------
+  (() => {
+    const menu = document.querySelector('.menu');
+    const board = menu.querySelector('.menu-board');
+    const btns = [...menu.querySelectorAll('.mf-btn')];
+    const bar = menu.querySelector('.mf-bar');
+    const hasGsap = !!window.gsap;
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    const moveBar = (btn, instant) => {
+      const x = btn.offsetLeft, w = btn.offsetWidth;
+      if(hasGsap && !instant && !reduce) gsap.to(bar, {x, scaleX:w, duration:.35, ease:'power3.out'});
+      else bar.style.transform = `translateX(${x}px) scaleX(${w})`;
+    };
+    const place = () => moveBar(btns.find(b => b.classList.contains('is-on')), true);
+    document.fonts ? document.fonts.ready.then(place) : place();
+    window.addEventListener('resize', place);
+
+    btns.forEach(btn => btn.addEventListener('click', () => {
+      if(btn.classList.contains('is-on')) return;
+      btns.forEach(b => {
+        const on = b === btn;
+        b.classList.toggle('is-on', on);
+        b.setAttribute('aria-selected', on);
+      });
+      moveBar(btn);
+      const swap = () => { board.dataset.view = btn.dataset.show; };
+      if(!hasGsap || reduce){ swap(); return; }
+      gsap.to(board, {autoAlpha:0, y:10, duration:.18, ease:'power1.in', onComplete:() => {
+        swap();
+        if(window.ScrollTrigger) ScrollTrigger.refresh();
+        gsap.fromTo(board, {autoAlpha:0, y:10}, {autoAlpha:1, y:0, duration:.35, ease:'power2.out'});
+      }});
+    }));
+
+  })();
+
+  // ---------- Visit: live open/closed status (Damascus time) ----------
+  (() => {
+    const VISIT_HOURS = {open:10 * 60, close:24 * 60}; // minutes after midnight, every day
+    const el = document.querySelector('.visit-status');
+    const text = el.querySelector('.visit-status-text');
+    const fmt = m => `${String(Math.floor((m % 1440) / 60)).padStart(2, '0')}:${String(m % 60).padStart(2, '0')}`;
+    const update = () => {
+      let now;
+      try {
+        const parts = new Intl.DateTimeFormat('en-GB', {timeZone:'Asia/Damascus', hour:'2-digit', minute:'2-digit', hourCycle:'h23'}).formatToParts(new Date());
+        now = +parts.find(x => x.type === 'hour').value * 60 + +parts.find(x => x.type === 'minute').value;
+      } catch(e) { return; }
+      const open = now >= VISIT_HOURS.open && now < VISIT_HOURS.close;
+      el.classList.toggle('is-open', open);
+      el.classList.toggle('is-closed', !open);
+      text.textContent = open ? `Open now, closes ${fmt(VISIT_HOURS.close)}` : `Closed now, opens ${fmt(VISIT_HOURS.open)}`;
+    };
+    update();
+    setInterval(update, 60000);
+  })();
+</script>
+
+</body>
+</html>

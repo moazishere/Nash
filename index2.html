@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nash Bakery — Damascus</title>
+<meta name="description" content="Nash Bakery in Damascus. Cakes, cookies, cinnamon rolls and fresh bread, baked every morning. Open every day 10:00–00:00.">
+<meta name="theme-color" content="#14563C">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Titan+One&family=Figtree:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+  /* ============================================================
+     NASH BAKERY — retro revival (alternate direction)
+     A second skin, living alongside index.html. Where the editorial
+     version is restrained, this one is loud on purpose: chunky display
+     type, scallops, checkerboard, ticker bars.
+
+     The palette is green-dominant rather than the reference's orange.
+     Two rules keep it from turning to mush:
+       1. LIME and MINT are fills only — never body type. Both are light,
+          and on cream they fail contrast badly.
+       2. GREEN and INK are the type colours. Lime is type only when it
+          sits on green.
+     ============================================================ */
+
+  :root{
+    --cream:#F7F2E3;      /* warm retro paper                  */
+    --cream-2:#EFE7D2;    /* deeper band                       */
+    --green:#14563C;      /* grounds + display type            */
+    --green-dk:#0D3A28;   /* footer, deepest                   */
+    --lime:#C6E84B;       /* tickers, buttons, type ON green   */
+    --mint:#A8DCBE;       /* scallops, secondary fills         */
+    --green-lt:#3E9B5F;   /* brighter green — accent lines     */
+    --ink:#12241B;        /* body text                         */
+    --ink-soft:#3C5247;
+
+    --display:'Titan One', system-ui, sans-serif;
+    --text:'Figtree', system-ui, sans-serif;
+
+    --r:26px;             /* the house corner radius           */
+    --r-lg:38px;
+    --pad:clamp(18px, 5vw, 64px);
+    --max:1280px;
+  }
+
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    font-family:var(--text);
+    font-size:17px;
+    line-height:1.6;
+    background:var(--cream);
+    color:var(--ink);
+    -webkit-font-smoothing:antialiased;
+    overflow-x:hidden;
+  }
+  img{display:block;max-width:100%;}
+  a{color:inherit;text-decoration:none;}
+  ul{list-style:none;}
+
+  h1,h2,h3{
+    font-family:var(--display);
+    font-weight:400;        /* Titan One ships one weight */
+    line-height:.96;
+    letter-spacing:-.005em;
+    color:var(--green);
+  }
+
+  :focus-visible{outline:3px solid var(--green);outline-offset:3px;}
+  .on-green :focus-visible{outline-color:var(--lime);}
+
+  .wrap{max-width:var(--max);margin:0 auto;padding:0 var(--pad);}
+
+  /* ---------- Nav ---------- */
+  .nav{
+    position:sticky;top:0;z-index:60;
+    background:var(--cream);
+    border-bottom:2px solid var(--green);
+  }
+  .nav-in{
+    max-width:var(--max);margin:0 auto;
+    padding:14px var(--pad);
+    display:flex;align-items:center;justify-content:space-between;gap:20px;
+  }
+  .brand{
+    font-family:var(--display);
+    font-size:clamp(19px, 2.3vw, 26px);
+    color:var(--green);
+  }
+  .nav-links{display:flex;gap:clamp(12px, 2.2vw, 30px);font-weight:600;font-size:15px;}
+  .nav-links a{padding:4px 0;border-bottom:2px solid transparent;transition:border-color .18s;}
+  .nav-links a:hover{border-bottom-color:var(--lime);}
+
+  /* ---------- Hero ---------- */
+  .hero{position:relative;}
+  .hero-media{position:relative;height:clamp(420px, 74svh, 720px);overflow:hidden;}
+  .hero-media img{width:100%;height:100%;object-fit:cover;}
+  /* A cream wash only where the type sits, so the display colour stays
+     readable without flattening the whole photograph. */
+  .hero-media::after{
+    content:'';position:absolute;inset:0;
+    background:linear-gradient(100deg,
+      rgba(247,242,227,.94) 0%,
+      rgba(247,242,227,.78) 34%,
+      rgba(247,242,227,.10) 62%,
+      rgba(247,242,227,0) 100%);
+  }
+  .hero-copy{
+    position:absolute;inset:0;z-index:2;
+    max-width:var(--max);margin:0 auto;
+    padding:clamp(24px,5vw,64px) var(--pad);
+    display:flex;flex-direction:column;justify-content:center;
+  }
+  .hero-copy h1{
+    font-size:clamp(38px, 7.4vw, 96px);
+    line-height:.94;
+    max-width:14ch;
+  }
+  .hero-copy h1 .a{color:var(--green);}
+  .hero-copy h1 .b{color:var(--green-lt);}
+  .hero-copy h1 .c{color:var(--mint);-webkit-text-stroke:2px var(--green);}
+  .hero-note{
+    margin-top:18px;font-weight:600;font-size:clamp(14px,1.5vw,17px);
+    color:var(--ink-soft);max-width:34ch;
+  }
+
+  /* ---------- Ticker ---------- */
+  .ticker{
+    background:var(--lime);
+    border-top:2px solid var(--green);
+    border-bottom:2px solid var(--green);
+    overflow:hidden;
+    padding:9px 0;
+  }
+  .ticker-row{display:flex;width:max-content;animation:roll 34s linear infinite;}
+  .ticker.rev .ticker-row{animation-direction:reverse;}
+  .ticker-set{display:flex;flex:none;}
+  .ticker span{
+    font-family:var(--display);
+    font-size:clamp(13px, 1.5vw, 17px);
+    color:var(--green);
+    padding:0 26px;
+    white-space:nowrap;
+  }
+  @keyframes roll{to{transform:translateX(-25%);}}
+
+  /* ---------- Two-up ---------- */
+  .duo{display:grid;grid-template-columns:1.05fr 1fr;}
+  .duo-photo{position:relative;min-height:clamp(380px, 56vw, 560px);overflow:hidden;}
+  .duo-photo img{width:100%;height:100%;object-fit:cover;}
+  .duo-photo::after{
+    content:'';position:absolute;inset:0;
+    background:linear-gradient(180deg, rgba(13,58,40,.44), rgba(13,58,40,.18));
+  }
+  .duo-copy{
+    position:absolute;inset:0;z-index:2;
+    padding:clamp(22px,4vw,52px);
+    display:flex;flex-direction:column;justify-content:center;align-items:flex-start;gap:20px;
+  }
+  .duo-copy h2{color:var(--cream);font-size:clamp(34px, 4.6vw, 62px);line-height:.94;}
+  .btn{
+    display:inline-block;
+    font-family:var(--display);
+    font-size:clamp(13px,1.3vw,16px);
+    color:var(--ink);
+    background:var(--lime);
+    border:2px solid var(--green);
+    border-radius:999px;
+    padding:11px 30px;
+    transition:transform .16s ease, background .16s ease;
+  }
+  .btn:hover{transform:translateY(-2px);background:var(--mint);}
+
+  .duo-side{
+    background:var(--cream-2);
+    padding:clamp(26px,4vw,58px) clamp(20px,4vw,52px);
+    display:grid;place-items:center;
+  }
+
+  /* Scalloped frame — bumps on the top edge, rounded below */
+  .scallop{
+    position:relative;
+    background:var(--mint);
+    border-radius:0 0 var(--r) var(--r);
+    padding:14px;
+    margin-top:28px;
+    max-width:420px;
+    width:100%;
+  }
+  .scallop::before{
+    content:'';
+    position:absolute;left:0;right:0;top:-27px;
+    height:28px;
+    background:radial-gradient(circle 27px at 50% 100%, var(--mint) 97%, transparent 100%);
+    background-size:54px 54px;
+    background-repeat:repeat-x;
+    background-position:center bottom;
+  }
+  .scallop img{
+    width:100%;
+    aspect-ratio:1;
+    object-fit:cover;
+    border-radius:calc(var(--r) - 12px);
+    position:relative;
+    z-index:1;
+  }
+  /* Checkerboard plate behind the scalloped photo */
+  .check{
+    position:relative;
+    padding:18px;
+    border-radius:var(--r);
+    background:
+      conic-gradient(var(--mint) 0 25%, transparent 0 50%, var(--mint) 0 75%, transparent 0)
+      0 0 / 34px 34px,
+      var(--cream);
+    border:2px solid var(--green);
+  }
+
+  /* ---------- Story ---------- */
+  .story{padding:clamp(48px,8vw,104px) 0;}
+  .story-grid{
+    display:grid;grid-template-columns:1fr 1fr;
+    gap:clamp(24px,5vw,64px);align-items:center;
+  }
+  .story-shot img{
+    width:100%;
+    aspect-ratio:4/5;
+    object-fit:cover;
+    border-radius:var(--r-lg);
+    border:2px solid var(--green);
+  }
+  .story h2{font-size:clamp(34px,5.2vw,68px);}
+  .story h2 .hl{color:var(--green-lt);}
+  .story p{margin-top:20px;max-width:46ch;color:var(--ink-soft);}
+  .story .btn{margin-top:26px;}
+
+  /* ---------- Three cards ---------- */
+  .cards{padding:0 0 clamp(52px,8vw,104px);}
+  .cards-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(14px,2.4vw,28px);}
+  .card{display:flex;flex-direction:column;gap:14px;}
+  .card-shot{
+    position:relative;
+    border-radius:var(--r);
+    overflow:hidden;
+    border:2px solid var(--green);
+  }
+  .card-shot img{
+    width:100%;aspect-ratio:16/10;object-fit:cover;
+    transition:transform .5s cubic-bezier(.2,.6,.2,1);
+  }
+  .card:hover .card-shot img{transform:scale(1.05);}
+  .card-shot::after{
+    content:'';position:absolute;inset:0;
+    background:linear-gradient(180deg, rgba(13,58,40,.16), rgba(13,58,40,.5));
+  }
+  .card-shot h3{
+    position:absolute;z-index:2;left:0;right:0;top:50%;
+    transform:translateY(-50%);
+    text-align:center;
+    color:var(--cream);
+    font-size:clamp(26px,3.4vw,46px);
+  }
+  .card .btn{text-align:center;}
+
+  /* ---------- Footer ---------- */
+  footer{
+    background:var(--green-dk);
+    color:rgba(247,242,227,.78);
+    padding:clamp(44px,7vw,84px) 0 26px;
+  }
+  .foot-grid{display:grid;grid-template-columns:1.6fr 1fr 1fr;gap:clamp(22px,4vw,56px);}
+  footer h4{
+    font-family:var(--display);
+    font-size:22px;color:var(--lime);margin-bottom:12px;
+  }
+  .foot-brand p{margin-top:12px;max-width:32ch;font-size:15.5px;}
+  footer li{margin-bottom:8px;font-size:15.5px;}
+  footer a:hover{color:var(--lime);}
+  .foot-bottom{
+    margin-top:clamp(34px,5vw,60px);padding-top:18px;
+    border-top:1px solid rgba(247,242,227,.16);
+    display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;
+    font-size:14px;color:rgba(247,242,227,.5);
+  }
+
+  /* ---------- Responsive ---------- */
+  @media (max-width:900px){
+    .duo{grid-template-columns:1fr;}
+    .story-grid{grid-template-columns:1fr;}
+    .cards-grid{grid-template-columns:1fr;}
+    .card-shot img{aspect-ratio:16/8;}
+  }
+  @media (max-width:700px){
+    /* The angled wash leaves the right-hand side of the copy sitting on bare
+       photograph once the column narrows, so it goes vertical and stronger. */
+    .hero-media::after{
+      background:linear-gradient(180deg,
+        rgba(247,242,227,.90) 0%,
+        rgba(247,242,227,.86) 46%,
+        rgba(247,242,227,.30) 78%,
+        rgba(247,242,227,.10) 100%);
+    }
+    .hero-copy{justify-content:flex-start;padding-top:clamp(28px,7vw,54px);}
+    .foot-grid{grid-template-columns:1fr;gap:28px;}
+  }
+  @media (max-width:620px){
+    .nav-links{display:none;}
+    .hero-copy h1{max-width:none;}
+  }
+
+  /* A marquee is a continuous auto-playing motion — removed outright,
+     not slowed, under reduced motion. */
+  @media (prefers-reduced-motion: reduce){
+    .ticker-row{animation:none;}
+    .ticker{overflow-x:auto;}
+    .card-shot img{transition:none;}
+    html{scroll-behavior:auto;}
+  }
+</style>
+</head>
+<body>
+
+<!-- Every photograph here is a stock stand-in for real Nash photography -->
+
+<nav class="nav">
+  <div class="nav-in">
+    <a class="brand" href="#">Nash Bakery</a>
+    <ul class="nav-links">
+      <li><a href="#menu">Menu</a></li>
+      <li><a href="#story">Our baking</a></li>
+      <li><a href="#visit">Visit</a></li>
+      <li><a href="#cards">Order</a></li>
+    </ul>
+  </div>
+</nav>
+
+<header class="hero">
+  <div class="hero-media">
+    <img src="https://images.unsplash.com/photo-1608198093002-ad4e005484ec?q=85&w=1900&auto=format&fit=crop"
+         alt="Baskets of bread and baguettes fresh from the oven" fetchpriority="high">
+  </div>
+  <div class="hero-copy">
+    <h1>
+      <span class="a">Baked This</span><br>
+      <span class="b">Morning,</span><br>
+      <span class="a">Gone By</span><br>
+      <span class="c">Tonight.</span>
+    </h1>
+    <p class="hero-note">A bakery in Damascus since 2018. Open every day, 10:00–00:00.</p>
+  </div>
+</header>
+
+<div class="ticker" aria-hidden="true">
+  <div class="ticker-row">
+    <div class="ticker-set"><span>Out of the oven all morning</span><span>·</span><span>Open every day till midnight</span><span>·</span><span>Come early for the cinnamon rolls</span><span>·</span></div>
+    <div class="ticker-set"><span>Out of the oven all morning</span><span>·</span><span>Open every day till midnight</span><span>·</span><span>Come early for the cinnamon rolls</span><span>·</span></div>
+    <div class="ticker-set"><span>Out of the oven all morning</span><span>·</span><span>Open every day till midnight</span><span>·</span><span>Come early for the cinnamon rolls</span><span>·</span></div>
+    <div class="ticker-set"><span>Out of the oven all morning</span><span>·</span><span>Open every day till midnight</span><span>·</span><span>Come early for the cinnamon rolls</span><span>·</span></div>
+  </div>
+</div>
+
+<section class="duo" id="menu">
+  <div class="duo-photo">
+    <img src="https://images.unsplash.com/photo-1509365465985-25d11c17e812?q=85&w=1400&auto=format&fit=crop"
+         alt="A tray of cinnamon rolls dusted with sugar" loading="lazy">
+    <div class="duo-copy">
+      <h2>Cakes<br>Cookies<br>Cinnamon Rolls<br>Bread<br>&amp; More</h2>
+      <a class="btn" href="#cards">View Menu</a>
+    </div>
+  </div>
+  <div class="duo-side">
+    <div class="check">
+      <div class="scallop">
+        <img src="https://images.unsplash.com/photo-1578985545062-69928b1d9587?q=85&w=900&auto=format&fit=crop"
+             alt="A chocolate layer cake with ganache down the sides" loading="lazy">
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="ticker rev" aria-hidden="true">
+  <div class="ticker-row">
+    <div class="ticker-set"><span>Delivery on BeeOrder &amp; Movo</span><span>·</span><span>Whole cakes to order</span><span>·</span><span>Call 0987 514 666</span><span>·</span></div>
+    <div class="ticker-set"><span>Delivery on BeeOrder &amp; Movo</span><span>·</span><span>Whole cakes to order</span><span>·</span><span>Call 0987 514 666</span><span>·</span></div>
+    <div class="ticker-set"><span>Delivery on BeeOrder &amp; Movo</span><span>·</span><span>Whole cakes to order</span><span>·</span><span>Call 0987 514 666</span><span>·</span></div>
+    <div class="ticker-set"><span>Delivery on BeeOrder &amp; Movo</span><span>·</span><span>Whole cakes to order</span><span>·</span><span>Call 0987 514 666</span><span>·</span></div>
+  </div>
+</div>
+
+<section class="story" id="story">
+  <div class="wrap story-grid">
+    <div class="story-shot">
+      <img src="https://images.unsplash.com/photo-1587241321921-91a834d6d191?q=85&w=1100&auto=format&fit=crop"
+           alt="The Nash counter, trays of bread and pastry under the lights" loading="lazy">
+    </div>
+    <div>
+      <h2>Listen, People,<br><span class="hl">to a Story</span></h2>
+      <p>Nash Bakery started in Damascus in 2018. Cakes, cookies, cinnamon rolls,
+        bread — all of it mixed, proved and baked on the premises, the same day
+        you buy it.</p>
+      <p>Nothing is held over to the next morning, which is the whole reason we
+        sell out. Come early if you want the cinnamon rolls.</p>
+      <a class="btn" href="#visit">Find Us</a>
+    </div>
+  </div>
+</section>
+
+<section class="cards" id="cards">
+  <div class="wrap cards-grid">
+    <div class="card">
+      <div class="card-shot">
+        <img src="https://images.unsplash.com/photo-1499636136210-6f4ee915583e?q=85&w=900&auto=format&fit=crop"
+             alt="Chocolate chunk cookies cooling on a sheet" loading="lazy">
+        <h3>Menu</h3>
+      </div>
+      <a class="btn" href="#menu">See What We Bake</a>
+    </div>
+    <div class="card">
+      <div class="card-shot">
+        <img src="https://images.unsplash.com/photo-1568254183919-78a4f43a2877?q=85&w=900&auto=format&fit=crop"
+             alt="Pastries lined up in the display case" loading="lazy">
+        <h3>Order</h3>
+      </div>
+      <a class="btn" href="tel:+963987514666">Call 0987 514 666</a>
+    </div>
+    <div class="card" id="visit">
+      <div class="card-shot">
+        <img src="https://images.unsplash.com/photo-1549931319-a545dcf3bc73?q=85&w=900&auto=format&fit=crop"
+             alt="A dark country loaf, sliced" loading="lazy">
+        <h3>Visit</h3>
+      </div>
+      <a class="btn" href="https://www.google.com/maps/dir/?api=1&amp;destination=33.515793,36.283978"
+         target="_blank" rel="noopener">Get Directions</a>
+    </div>
+  </div>
+</section>
+
+<footer class="on-green">
+  <div class="wrap">
+    <div class="foot-grid">
+      <div class="foot-brand">
+        <h4>Nash Bakery</h4>
+        <p>A bakery in Damascus since 2018. Everything is mixed, proved and baked
+          here, the same day you buy it.</p>
+      </div>
+      <div>
+        <h4>Visit</h4>
+        <ul>
+          <li>Damascus, Syria</li>
+          <li>Every day, 10:00–00:00</li>
+          <li><a href="https://www.google.com/maps/dir/?api=1&amp;destination=33.515793,36.283978"
+                 target="_blank" rel="noopener">Get directions</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Say Hello</h4>
+        <ul>
+          <li><a href="tel:+963987514666">0987 514 666</a></li>
+          <li><a href="https://www.instagram.com/nashbakery__/" target="_blank" rel="noopener">@nashbakery__</a></li>
+          <li>Delivery: BeeOrder &amp; Movo</li>
+        </ul>
+      </div>
+    </div>
+    <div class="foot-bottom">
+      <span>© 2026 Nash Bakery</span>
+      <span>Prices are on the board at the counter</span>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>
