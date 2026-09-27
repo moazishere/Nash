@@ -78,6 +78,18 @@ Sections in document order, each a `<section>` directly under `.page-frame`:
 
 Things worth knowing before editing:
 
+- **The navbar** has the logo on the left and the links on the right (it used
+  to centre a text wordmark; the client moved it). The logo is
+  `images/logo-wordmark.png`, the NASH lettering only — the full lockup's
+  "EST. 2018 / ARTISANAL BAKERY" lines shrink to ~4px at bar height. It is
+  dark ink, and CSS turns it white (`filter:brightness(0) invert(1)`) while
+  the bar floats over the hero. **At 760px and below** the links fold into a
+  full-screen cream panel behind a two-line toggle, with a green "Call" button
+  at the bottom. While open it locks the page (`overflow:hidden` plus
+  `window.nashLenis.stop()` — Lenis is exposed on `window` for this), closes
+  on Escape or on any link, and forces the bar to its cream state via
+  `.nav-open`; that is why the transparent-bar rules read
+  `:not(.scrolled):not(.nav-open)`.
 - **The pinned photo** (`.pinned`) is the site's one repeated gesture: white
   border, faint shadow, slight rotation. It is used in the hero collage, the
   story panel, the menu's house favourites and the map. New imagery should use it
@@ -254,9 +266,15 @@ comfortably, and only those two tokens are tight.
 
 `images/` holds the only files that are not inline or hot-linked:
 
+- `logo.jpg` — **the client's logo, untouched**: black lettering on an olive
+  square. Olive is not in the palette, so the site never shows the square;
+  the ink was cut out by luminance (ground ~129, ink ~20, alpha ramped between
+  with the bottom 10% dropped as JPEG noise) into two transparent PNGs:
+  `logo-wordmark.png` (navbar) and `logo-full.png` (footer, in cream). Re-cut
+  from `logo.jpg` if the logo changes; don't edit the PNGs by hand.
 - `favicon.svg` / `apple-touch-icon.png` — a butterfly silhouette, left over
-  from a scene that was cut. It works as an abstract mark, but nothing else on
-  the page is a butterfly any more, so it is a loose end worth a decision.
+  from a scene that was cut. Now that the real logo is on the page, these
+  should become the NASH wordmark (or an "N" from it) — still to do.
 - `cheesecake.webp` — the answer to the guessing, **cut out of its backdrop** so
   it floats on the green. This one is a *light subject on a near-black ground*,
   so it was cut by **luminance threshold** (120) and largest-component, not by

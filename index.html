@@ -140,7 +140,7 @@
     font-style:italic;
   }
 
-  /* ---------- Navbar (cream, centred wordmark as in the reference) ---------- */
+  /* ---------- Navbar: logo left, links right ---------- */
   .navbar-wrap{
     /* Fixed, not sticky: sticky keeps its place in the flow, so the hero
        began below it and a cream band cut across the top of the footage. */
@@ -153,59 +153,130 @@
   .navbar-wrap.scrolled{box-shadow:0 1px 0 var(--rule);}
   /* Over the full-bleed hero the bar floats; a cream band across the top
      cuts the footage in half and kills the cinematic read. The JS already
-     toggles .scrolled past 40px. */
-  .navbar-wrap:not(.scrolled){background:transparent;}
-  .navbar-wrap:not(.scrolled) .logo{color:var(--paper);}
-  .navbar-wrap:not(.scrolled) .logo .est{color:rgba(250,246,243,.62);}
-  .navbar-wrap:not(.scrolled) .nav-links{color:rgba(250,246,243,.86);}
-  .navbar-wrap:not(.scrolled) .nav-links a:hover{
+     toggles .scrolled past 40px. An open mobile menu always gets the cream
+     bar, wherever the page is. */
+  .navbar-wrap:not(.scrolled):not(.nav-open){background:transparent;}
+  .navbar-wrap:not(.scrolled):not(.nav-open) .logo img{filter:brightness(0) invert(1);}
+  .navbar-wrap:not(.scrolled):not(.nav-open) .nav-links{color:rgba(250,246,243,.86);}
+  .navbar-wrap:not(.scrolled):not(.nav-open) .nav-links a:hover{
     color:#fff;
     border-bottom-color:rgba(250,246,243,.7);
   }
+  .navbar-wrap:not(.scrolled):not(.nav-open) .nav-toggle{color:var(--paper);}
   .navbar{
+    position:relative;
     max-width:1200px;
     margin:0 auto;
-    display:grid;
-    grid-template-columns:1fr auto 1fr;
+    display:flex;
     align-items:center;
+    justify-content:space-between;
     gap:20px;
     padding:18px var(--page-pad);
   }
-  .logo{
-    grid-column:2;
-    text-align:center;
-    font-family:var(--display);
-    font-weight:600;
-    font-size:clamp(19px, 2.2vw, 26px);
-    line-height:1;
-    color:var(--wine);
-  }
-  .logo .est{
+  .logo{display:block;flex:none;}
+  .logo img{
     display:block;
-    margin-top:6px;
-    font-family:var(--text);
-    font-size:10px;
-    font-weight:400;
-    letter-spacing:.24em;
-    text-transform:uppercase;
-    color:var(--muted);
+    height:clamp(24px, 2.3vw, 30px);
+    width:auto;
+    transition:filter .25s ease;
   }
   .nav-links{
     display:flex;
+    align-items:center;
     gap:clamp(14px, 2.4vw, 32px);
     font-family:var(--text);
     font-weight:400;
     font-size:15px;
     color:var(--ink-soft);
   }
-  .nav-links.left{grid-column:1;justify-content:flex-start;}
-  .nav-links.right{grid-column:3;justify-content:flex-end;}
   .nav-links a{
     padding-bottom:2px;
     border-bottom:1px solid transparent;
     transition:border-color .18s ease, color .18s ease;
   }
   .nav-links a:hover{color:var(--ink);border-bottom-color:var(--gold);}
+  .nav-extra{display:none;}
+
+  /* Two lines that fold into a cross. currentColor, so it follows the bar. */
+  .nav-toggle{
+    display:none;
+    position:relative;
+    width:44px;
+    height:44px;
+    margin-right:-10px;
+    color:var(--ink);
+  }
+  .nav-toggle span{
+    position:absolute;
+    left:11px;
+    width:22px;
+    height:1.5px;
+    background:currentColor;
+    transition:transform .3s cubic-bezier(.2,.6,.2,1), top .3s cubic-bezier(.2,.6,.2,1);
+  }
+  .nav-toggle span:first-child{top:17px;}
+  .nav-toggle span:last-child{top:25px;}
+  .nav-open .nav-toggle span:first-child{top:21px;transform:rotate(45deg);}
+  .nav-open .nav-toggle span:last-child{top:21px;transform:rotate(-45deg);}
+
+  /* Mobile: the same list becomes a full-screen cream panel under the bar,
+     with the phone number at the bottom — on a phone, calling is the thing
+     most visitors came to do. */
+  @media (max-width:760px){
+    .nav-toggle{display:block;}
+    .nav-links{
+      position:fixed;
+      inset:0;
+      z-index:-1;
+      flex-direction:column;
+      align-items:stretch;
+      gap:0;
+      padding:88px var(--page-pad) 32px;
+      background:var(--paper);
+      overflow-y:auto;
+      visibility:hidden;
+      opacity:0;
+      transform:translateY(-10px);
+      transition:opacity .25s ease, transform .3s ease, visibility 0s linear .3s;
+    }
+    .nav-open .nav-links{
+      visibility:visible;
+      opacity:1;
+      transform:none;
+      transition:opacity .25s ease, transform .3s ease;
+    }
+    .nav-links li{border-bottom:1px solid var(--rule);}
+    .nav-links a{
+      display:block;
+      padding:16px 0 14px;
+      border-bottom:0;
+      font-family:var(--display);
+      font-size:30px;
+      font-weight:500;
+      line-height:1.1;
+      color:var(--ink);
+    }
+    .nav-links a:hover{color:var(--wine);}
+    .nav-extra{display:block;margin-top:auto;padding-top:32px;border-bottom:0 !important;}
+    .nav-links .nav-call{
+      padding:15px 20px;
+      background:var(--green);
+      color:var(--paper);
+      font-family:var(--text);
+      font-size:17px;
+      text-align:center;
+    }
+    .nav-links .nav-call:hover{color:var(--butter);}
+    .nav-extra p{
+      margin-top:12px;
+      font-size:14px;
+      text-align:center;
+      color:var(--muted);
+    }
+  }
+  @media (max-width:760px) and (prefers-reduced-motion: reduce){
+    .nav-links, .nav-open .nav-links{transform:none;}
+  }
 
   /* ---------- Hero — full-bleed cinematic media ---------- */
   /* Real Nash footage. Anything in .hero-media is styled by the rule below,
@@ -947,8 +1018,15 @@
     grid-template-columns:1.7fr 1fr 1fr 1.2fr;
     gap:clamp(28px, 4vw, 56px);
   }
-  .footer-brand .logo{color:var(--butter);text-align:left;}
-  .footer-brand .logo .est{color:rgba(250,246,243,.45);}
+  /* The full lockup (wordmark + est. 2018 + artisanal bakery), in cream. */
+  .footer-logo{display:inline-block;}
+  .footer-logo img{
+    display:block;
+    width:clamp(170px, 18vw, 220px);
+    height:auto;
+    filter:brightness(0) invert(1);
+    opacity:.92;
+  }
   .footer-brand p{
     margin-top:16px;
     font-size:15.5px;
@@ -1008,9 +1086,6 @@
 
   @media (max-width: 640px){
     :root{--page-pad:6vw;}
-    .nav-links{display:none;}
-    .navbar{grid-template-columns:1fr;justify-items:center;}
-    .logo{grid-column:1;}
     .cta-banner-inner{flex-direction:column;align-items:flex-start;}
     .cta-btn{width:100%;text-align:center;justify-content:center;}
     .footer-top{grid-template-columns:1fr;gap:34px;}
@@ -1024,15 +1099,24 @@
 
   <!-- NAVBAR -->
   <div class="navbar-wrap">
-    <nav class="navbar">
-      <ul class="nav-links left">
+    <nav class="navbar" aria-label="Main">
+      <!-- The NASH wordmark, cut out of images/logo.jpg so it can turn white
+           over the hero. images/logo-full.png is the full lockup. -->
+      <a href="#" class="logo" aria-label="Nash Bakery, back to top">
+        <img src="images/logo-wordmark.png" alt="" width="642" height="131">
+      </a>
+      <button class="nav-toggle" aria-expanded="false" aria-controls="nav-links" aria-label="Open menu">
+        <span aria-hidden="true"></span><span aria-hidden="true"></span>
+      </button>
+      <ul class="nav-links" id="nav-links">
         <li><a href="#menu">Menu</a></li>
         <li><a href="#story">Our baking</a></li>
-      </ul>
-      <a href="#" class="logo">Nash Bakery<span class="est">Damascus · est. 2018</span></a>
-      <ul class="nav-links right">
         <li><a href="#visit">Visit</a></li>
         <li><a href="#faq">Good to know</a></li>
+        <li class="nav-extra">
+          <a class="nav-call" href="tel:+963987514666">Call 0987 514 666</a>
+          <p>Open every day, 10:00–00:00</p>
+        </li>
       </ul>
     </nav>
   </div>
@@ -1373,7 +1457,9 @@
     <div class="container">
       <div class="footer-top">
         <div class="footer-brand">
-          <a href="#" class="logo">Nash Bakery<span class="est">Damascus · est. 2018</span></a>
+          <a href="#" class="footer-logo" aria-label="Nash Bakery, back to top">
+            <img src="images/logo-full.png" alt="" width="642" height="308" loading="lazy">
+          </a>
           <p>A bakery in Damascus since 2018. Everything is mixed, proved and baked here, the same day you buy it.</p>
           <div class="footer-social">
             <a href="https://www.instagram.com/nashbakery__/" target="_blank" rel="noopener" aria-label="Instagram"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="2" y="2" width="20" height="20" rx="6" stroke="#fff" stroke-width="1.8"/><circle cx="12" cy="12" r="4.5" stroke="#fff" stroke-width="1.8"/><circle cx="17.5" cy="6.5" r="1.2" fill="#fff"/></svg></a>
@@ -1424,6 +1510,34 @@
   setNavState();
   window.addEventListener('scroll', setNavState, {passive:true});
 
+  // ---------- Mobile menu ----------
+  // The page underneath is frozen while the panel is open. Lenis is started
+  // again before a link's own click handler runs, or the jump would be eaten.
+  (() => {
+    const toggle = navWrap.querySelector('.nav-toggle');
+    const panel = navWrap.querySelector('.nav-links');
+    const mobile = window.matchMedia('(max-width: 760px)');
+
+    const setOpen = open => {
+      navWrap.classList.toggle('nav-open', open);
+      toggle.setAttribute('aria-expanded', open);
+      toggle.setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
+      document.documentElement.style.overflow = open ? 'hidden' : '';
+      if(window.nashLenis) open ? window.nashLenis.stop() : window.nashLenis.start();
+      if(open) panel.querySelector('a').focus({preventScroll:true});
+    };
+    const isOpen = () => navWrap.classList.contains('nav-open');
+
+    toggle.addEventListener('click', () => setOpen(!isOpen()));
+    panel.querySelectorAll('a').forEach(a => a.addEventListener('click', () => {
+      if(isOpen()) setOpen(false);
+    }));
+    document.addEventListener('keydown', e => {
+      if(e.key === 'Escape' && isOpen()){ setOpen(false); toggle.focus(); }
+    });
+    mobile.addEventListener('change', () => { if(!mobile.matches && isOpen()) setOpen(false); });
+  })();
+
   document.querySelectorAll('.faq-row').forEach(row => {
     row.querySelector('.faq-q').addEventListener('click', () => {
       const isOpen = row.classList.contains('open');
@@ -1457,6 +1571,7 @@
       // Lenis ignores scroll-margin-top, so anchor jumps need the navbar
       // clearance passed in here too, or targets land under the fixed bar.
       const lenis = new Lenis({duration:1.1, smoothWheel:true, anchors:{offset:-86}});
+      window.nashLenis = lenis;   // the mobile menu pauses it while open
       lenis.on('scroll', ScrollTrigger.update);
       gsap.ticker.add(t => lenis.raf(t * 1000));
       gsap.ticker.lagSmoothing(0);
